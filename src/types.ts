@@ -1,4 +1,4 @@
-export type Character = {
+export type CharacterType = {
   name?: string;
   bornLocation?: string;
   diedLocation?: string;

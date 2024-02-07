@@ -1,9 +1,9 @@
 import React from 'react';
 import './CharacterModal.css';
-import { Character } from '../../types';
+import { CharacterType } from '../../types';
 
 interface CharacterModalProps {
-  character: Character;
+  character: CharacterType;
   closeModal: () => void;
 }
 

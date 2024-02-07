@@ -1,0 +1,33 @@
+.paginationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .paginationButton {
+    background-color: #282727;
+    color: #ddd;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 125ms, color 125ms;
+  }
+  
+  .paginationButton:hover {
+    background-color: #9e4f60;
+    color: #ddd;
+  }
+  
+  .currentPage {
+    color: #ddd;
+    margin: 0 10px;
+  }
+  
+  @media only screen and (max-width: 768px) {
+    .paginationButton {
+      padding: 5px 10px;
+    }
+  }

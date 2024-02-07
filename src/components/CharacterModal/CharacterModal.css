@@ -1,8 +1,9 @@
 .ModalContainer {
-    display: flex;
-    justify-content: center;
-    border-radius: 6px;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  border-radius: 6px;
+}
   
   .ModalContainer > img {
     border-top-left-radius: 6px;
@@ -62,7 +63,7 @@
   
   .ModalContent {
     background-color: white;
-    padding: 20px;
+    padding: 5px;
     border-radius: 8px;
     position: relative;
     
@@ -74,3 +75,22 @@
     right: 10px;
     
   }
+
+ @media only screen and (max-width: 768px) {
+
+  .ModalContainer  {
+    width: 70vw;
+  }
+
+  .CharacterInfo {
+    width: 100%;
+  }
+
+  .CharacterInfo > h4 {
+    margin-bottom: 0px;
+  }
+
+  .ModalContainer > img {
+    display: none;
+  }
+}
