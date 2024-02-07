@@ -9,6 +9,7 @@ import Character from '../../components/Character/Character';
 import CharacterModal from '../../components/CharacterModal/CharacterModal';
 //import Header from '../../components/Header/Header';
 import Pagination from '../../components/Pagination/Pagination';
+import Loader from '../../components/Loader/Loader';
 
 // import the types
 import { CharacterProps } from '../../types';
@@ -21,8 +22,10 @@ const Landing = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [prevPage, setPrevPage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     const loadCharacters = async () => {
       try {
         const data = await fetchCharacters(currentPage);
@@ -36,6 +39,7 @@ const Landing = () => {
       } catch (error) {
         console.error('Failed to fetch characters:', error);
       }
+      setIsLoading(false);
     };
 
     loadCharacters();
@@ -56,6 +60,9 @@ const Landing = () => {
 
   return (
     <div className="center-container">
+      {/* Show loading component when data is fetching */}
+      {isLoading && <Loader />}
+
       {/* Card container for character cards */}
       <div className="card-container">
         {characters.map((character, index) => (
