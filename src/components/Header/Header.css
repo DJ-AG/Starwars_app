@@ -1,14 +1,100 @@
 .header {
-    background-color: #282727; /* Your style may vary */
-    padding: 10px;
-    text-align: center;
+    background-color: #282727;
+    padding: 30px;
+    padding-bottom: 0;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 999;
   }
   
-  .header input {
-    padding: 8px;
-    margin-right: 4px;
+  .header > .header-logo > img {
+    object-fit: contain;
+    margin-top: -50px;
+    margin-bottom: -30px;
+    height: 180px;
+    filter: brightness(0) invert(1);
+  }
+
+  .header-logo {
+    flex-grow: 1; 
+    display: flex;
+    justify-content: center; 
   }
   
-  .header button {
-    padding: 8px;
+  .header-search {
+    width: 26px;
+    min-width: 26px;
+    border-radius: 4px;
+    background-color: #343434;
+    box-shadow: none;
+    border: 0;
+    position: relative;
+    width: 248px;
+    opacity: 0.7;
+    height: 40px;
+    transition: opacity 350ms;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+  }
+
+  .HeaderSearch:focus-within {
+    opacity: 1;
+  }
+  
+  .header-search input {
+    background: transparent;
+    outline: none;
+    border: none;
+    font-weight: 400;
+    font-family: inherit;
+    font-size: 15px;
+    color: #ffffff;
+  }
+  
+  .header-search input::placeholder {
+    opacity: 1;
+    color: #ffffff;
+  }
+  
+  .header-search > img {
+    object-fit: contain;
+    height: 20px;
+  }
+  
+  .header-actions {
+    width: 100%;
+    margin-top: 10px;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  .header-actions > button {
+    background: transparent;
+    font-family: inherit;
+    font-weight: 600;
+    border: none;
+    color: #ddd;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 200ms;
+    letter-spacing: 2px;
+  }
+  
+  .header-actions > button:hover {
+    color: #9e4f60;
+  }
+  
+  .header-actions > span {
+    color: #343434;
+    font-size: 1.125em;
+    font-weight: 500;
   }

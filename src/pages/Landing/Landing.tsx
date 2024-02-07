@@ -100,7 +100,7 @@ const Landing = () => {
 
         {characters.map((character, index) => (
           <Character
-            key={index} // Ideally, use a unique identifier here
+            key={index}
             character={character}
             onClick={() => handleCharacterClick(character)}
           />
