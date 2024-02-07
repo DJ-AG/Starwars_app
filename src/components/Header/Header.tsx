@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Header.css';
+import Filter from '../Filters/Filters';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
+  onFilterChange: (filmId: string | null) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch, onFilterChange }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Call the onSearch prop with the current value of the input field
+    setSearchTerm(event.target.value);
     onSearch(event.target.value);
   };
 
   return (
     <div className="header">
+      <Filter onFilterChange={onFilterChange} />
       <div className="header-left"></div>
       <div className="header-logo">
         <img

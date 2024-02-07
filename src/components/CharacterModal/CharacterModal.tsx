@@ -54,7 +54,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
             <h4>GENDER</h4>
             <span>{character.gender}</span>
             <h4>DIMENSIONS</h4>
-            <span>Height: {character.dimensions}m</span>
+            <span>Height: {character.height}m</span>
             <h4>SPECIES</h4>
             <span>{character.species}</span>
             <h4>WIKI</h4>

@@ -6,7 +6,7 @@ export type CharacterType = {
   affiliations?: string[];
   apprentices?: string[];
   gender?: string;
-  dimensions?: number;
+  height?: number;
   species?: string;
   wiki?: string;
   image?: string;

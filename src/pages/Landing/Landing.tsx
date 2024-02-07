@@ -1,21 +1,29 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import './Landing.css';
 
-//Api call
-import { fetchCharacters, fetchCharacterByName } from '../../services/swapi';
+// API calls
+import {
+  fetchCharacters,
+  fetchCharacterByName,
+  fetchCharacterDetailsByUrl,
+  fetchFilmDetails,
+  fetchFilms
+} from '../../services/swapi';
 
-// Import the components
+// Components
 import Character from '../../components/Character/Character';
 import CharacterModal from '../../components/CharacterModal/CharacterModal';
 import Header from '../../components/Header/Header';
 import Pagination from '../../components/Pagination/Pagination';
 import Loader from '../../components/Loader/Loader';
 
-// import the types
+// Types
 import { CharacterProps } from '../../types';
 
-const Landing = () => {
+// Main component for displaying Star Wars characters
+const Landing: React.FC = () => {
+  // State management for characters, selected character, modal, pagination, and loading status
   const [characters, setCharacters] = useState<CharacterProps[]>([]);
   const [selectedCharacter, setSelectedCharacter] =
     useState<CharacterProps | null>(null);
@@ -24,80 +32,127 @@ const Landing = () => {
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [prevPage, setPrevPage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [films, setFilms] = useState<{ title: string; id: string }[]>([]);
 
+  // Load characters on page load or page change
   useEffect(() => {
-    if (!isLoading) {
-      loadCharacters(currentPage);
-    }
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const [characterData, filmData] = await Promise.all([
+          fetchCharacters(currentPage),
+          fetchFilms()
+        ]); // Fetch both characters and films concurrently
+        setCharacters(characterData.results);
+        setFilms(filmData);
+        updatePagination(characterData.next, characterData.previous);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
   }, [currentPage]);
 
-  // Function to load characters
+  // Fetch characters for the current page
   const loadCharacters = async (page: number) => {
     setIsLoading(true);
     try {
       const data = await fetchCharacters(page);
       setCharacters(data.results);
-      setNextPage(
-        data.next ? new URL(data.next).searchParams.get('page') : null
-      );
-      setPrevPage(
-        data.previous ? new URL(data.previous).searchParams.get('page') : null
-      );
+      updatePagination(data.next, data.previous);
     } catch (error) {
       console.error('Failed to fetch characters:', error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
-  // Debounced search function
-  const debouncedSearch = debounce(async (query: string) => {
+  // Update pagination state
+  const updatePagination = (next: string | null, previous: string | null) => {
+    setNextPage(next ? new URL(next).searchParams.get('page') : null);
+    setPrevPage(previous ? new URL(previous).searchParams.get('page') : null);
+  };
+
+  // Search characters by name
+  const handleSearchByName = debounce(async (query: string) => {
     if (query.length === 0) {
-      loadCharacters(1); // Load the first page of characters if search is cleared
+      loadCharacters(1);
       return;
     }
     setIsLoading(true);
     try {
       const data = await fetchCharacterByName(query);
       setCharacters(data.results);
-      setNextPage(null); // Reset pagination after search
+      setNextPage(null);
       setPrevPage(null);
     } catch (error) {
       console.error('Failed to search characters:', error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, 300);
 
-  // Handler for character selection
+  // Handle character selection for modal display
   const handleCharacterClick = (character: CharacterProps) => {
     setSelectedCharacter(character);
     setIsModalOpen(true);
   };
 
-  // Handler for closing the modal
+  // Close the character detail modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
-  // Handler for page change
+  // Navigate to a specific page
   const goToPage = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Handler for search input change
-  const handleSearchChange = (query: string) => {
-    debouncedSearch(query);
+  // Filter characters by film
+  const handleFilterChange = async (filmId: string | null) => {
+    if (!filmId) {
+      setCurrentPage(1); // Reset to the first page if "none" is selected
+      loadCharacters(currentPage);
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const filmDetails = await fetchFilmDetails(filmId);
+      const charactersData = await Promise.all(
+        filmDetails.characters.map((url: string) =>
+          fetchCharacterDetailsByUrl(url)
+        )
+      );
+      setCharacters(charactersData);
+      resetPagination();
+    } catch (error) {
+      console.error('Failed to fetch characters by film:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Reset pagination
+  const resetPagination = () => {
+    setNextPage(null);
+    setPrevPage(null);
   };
 
   return (
     <div className="center-container">
-      {/* Header component with search input */}
-      <Header onSearch={handleSearchChange} />
+      {/* Header with search and filter options */}
+      <Header
+        onSearch={handleSearchByName}
+        onFilterChange={handleFilterChange}
+      />
 
-      {/* Card container for character cards */}
+      {/* Loading spinner */}
+      {isLoading && <Loader />}
+
+      {/* List of character cards */}
       <div className="card-container">
-        {/* Show loading component when data is fetching */}
-        {isLoading && <Loader />}
-
         {characters.map((character, index) => (
           <Character
             key={index}
@@ -107,17 +162,17 @@ const Landing = () => {
         ))}
       </div>
 
-      {/* Character Modal */}
+      {/* Modal for displaying selected character details */}
       {isModalOpen && selectedCharacter && (
         <CharacterModal character={selectedCharacter} closeModal={closeModal} />
       )}
 
-      {/* Pagination at bottom */}
+      {/* Pagination controls */}
       <div className="pagination-container-top">
         <Pagination
           currentPage={currentPage}
-          hasNextPage={nextPage !== null}
-          hasPrevPage={prevPage !== null}
+          hasNextPage={!!nextPage}
+          hasPrevPage={!!prevPage}
           goToPage={goToPage}
         />
       </div>
