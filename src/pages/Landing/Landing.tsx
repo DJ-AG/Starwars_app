@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import './Landing.css';
-
-// API calls
 import {
   fetchCharacters,
   fetchCharacterByName,
   fetchCharacterDetailsByUrl,
   fetchFilmDetails,
-  fetchFilms
+  fetchSpeciesDetails,
+  fetchPlanetDetails
 } from '../../services/swapi';
-
-// Components
 import Character from '../../components/Character/Character';
 import CharacterModal from '../../components/CharacterModal/CharacterModal';
 import Header from '../../components/Header/Header';
 import Pagination from '../../components/Pagination/Pagination';
 import Loader from '../../components/Loader/Loader';
-
-// Types
 import { CharacterProps } from '../../types';
 
-// Main component for displaying Star Wars characters
 const Landing: React.FC = () => {
-  // State management for characters, selected character, modal, pagination, and loading status
+  // State management
   const [characters, setCharacters] = useState<CharacterProps[]>([]);
   const [selectedCharacter, setSelectedCharacter] =
     useState<CharacterProps | null>(null);
@@ -32,31 +26,19 @@ const Landing: React.FC = () => {
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [prevPage, setPrevPage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [films, setFilms] = useState<{ title: string; id: string }[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState({
+    film: null,
+    species: null,
+    planet: null
+  });
 
-  // Load characters on page load or page change
+  // Load characters when page first renders or currentPage changes
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const [characterData, filmData] = await Promise.all([
-          fetchCharacters(currentPage),
-          fetchFilms()
-        ]); // Fetch both characters and films concurrently
-        setCharacters(characterData.results);
-        setFilms(filmData);
-        updatePagination(characterData.next, characterData.previous);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
+    loadCharacters(currentPage);
   }, [currentPage]);
 
-  // Fetch characters for the current page
-  const loadCharacters = async (page: number) => {
+  // Function to load characters from API
+  const loadCharacters = async (page: number = 1) => {
     setIsLoading(true);
     try {
       const data = await fetchCharacters(page);
@@ -75,66 +57,110 @@ const Landing: React.FC = () => {
     setPrevPage(previous ? new URL(previous).searchParams.get('page') : null);
   };
 
-  // Search characters by name
+  // Debounced function to handle character search by name
   const handleSearchByName = debounce(async (query: string) => {
-    if (query.length === 0) {
-      loadCharacters(1);
-      return;
-    }
     setIsLoading(true);
-    try {
-      const data = await fetchCharacterByName(query);
-      setCharacters(data.results);
-      setNextPage(null);
-      setPrevPage(null);
-    } catch (error) {
-      console.error('Failed to search characters:', error);
-    } finally {
-      setIsLoading(false);
+    if (query.length === 0) {
+      loadCharacters(); // Load all characters if search query is empty
+    } else {
+      try {
+        const data = await fetchCharacterByName(query);
+        setCharacters(data.results);
+        resetPagination();
+      } catch (error) {
+        console.error('Failed to search characters:', error);
+      }
     }
+    setIsLoading(false);
   }, 300);
 
-  // Handle character selection for modal display
+  // Open character modal on click
   const handleCharacterClick = (character: CharacterProps) => {
     setSelectedCharacter(character);
     setIsModalOpen(true);
   };
 
-  // Close the character detail modal
-  const closeModal = () => {
-    setIsModalOpen(false);
+  // Close character modal
+  const closeModal = () => setIsModalOpen(false);
+
+  // Function to navigate to a specific page
+  const goToPage = (page: number) => setCurrentPage(page);
+
+  // Handle filter change
+  const handleFilterChange = async (
+    filterType: string,
+    filterValue: string | null
+  ) => {
+    const updatedFilters = { ...selectedFilters, [filterType]: filterValue };
+    setSelectedFilters(updatedFilters);
+    applyFilters(updatedFilters);
   };
 
-  // Navigate to a specific page
-  const goToPage = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  // Filter characters by film
-  const handleFilterChange = async (filmId: string | null) => {
-    if (!filmId) {
-      setCurrentPage(1); // Reset to the first page if "none" is selected
-      loadCharacters(currentPage);
-      return;
-    }
+  // Apply filters and fetch filtered characters
+  const applyFilters = async (filters: any) => {
     setIsLoading(true);
+    setCharacters([]); // Clear characters before applying new filters
+
     try {
-      const filmDetails = await fetchFilmDetails(filmId);
-      const charactersData = await Promise.all(
-        filmDetails.characters.map((url: string) =>
-          fetchCharacterDetailsByUrl(url)
-        )
-      );
+      let characterUrls = new Set();
+
+      // Fetch characters based on film filter if set
+      if (filters.film) {
+        const filmDetails = await fetchFilmDetails(filters.film);
+        filmDetails.characters.forEach((url) => characterUrls.add(url));
+      }
+
+      // Fetch characters based on species filter if set
+      if (filters.species) {
+        const speciesDetails = await fetchSpeciesDetails(filters.species);
+        if (characterUrls.size > 0) {
+          characterUrls = new Set(
+            [...characterUrls].filter((url) =>
+              speciesDetails.people.includes(url)
+            )
+          );
+        } else {
+          speciesDetails.people.forEach((url) => characterUrls.add(url));
+        }
+      }
+
+      // Fetch characters based on planet filter if set
+      if (filters.planet) {
+        const planetDetails = await fetchPlanetDetails(filters.planet);
+        if (characterUrls.size > 0) {
+          characterUrls = new Set(
+            [...characterUrls].filter((url) =>
+              planetDetails.residents.includes(url)
+            )
+          );
+        } else {
+          planetDetails.residents.forEach((url) => characterUrls.add(url));
+        }
+      }
+
+      // If no filter is set, load characters normally without pagination
+      if (!filters.film && !filters.species && !filters.planet) {
+        loadCharacters();
+        return;
+      }
+
+      // Fetch detailed character information for the filtered URLs
+      const charactersData =
+        characterUrls.size > 0
+          ? await Promise.all(
+              [...characterUrls].map(fetchCharacterDetailsByUrl)
+            )
+          : [];
+
       setCharacters(charactersData);
-      resetPagination();
     } catch (error) {
-      console.error('Failed to fetch characters by film:', error);
+      console.error('Failed to apply filters:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Reset pagination
+  // Reset pagination state
   const resetPagination = () => {
     setNextPage(null);
     setPrevPage(null);
@@ -142,16 +168,14 @@ const Landing: React.FC = () => {
 
   return (
     <div className="center-container">
-      {/* Header with search and filter options */}
+      {/* Header component for search and filters */}
       <Header
         onSearch={handleSearchByName}
         onFilterChange={handleFilterChange}
       />
-
-      {/* Loading spinner */}
+      {/* Loader component to indicate loading state */}
       {isLoading && <Loader />}
-
-      {/* List of character cards */}
+      {/* Container to display character cards */}
       <div className="card-container">
         {characters.map((character, index) => (
           <Character
@@ -161,21 +185,17 @@ const Landing: React.FC = () => {
           />
         ))}
       </div>
-
-      {/* Modal for displaying selected character details */}
+      {/* Character modal component */}
       {isModalOpen && selectedCharacter && (
         <CharacterModal character={selectedCharacter} closeModal={closeModal} />
       )}
-
-      {/* Pagination controls */}
-      <div className="pagination-container-top">
-        <Pagination
-          currentPage={currentPage}
-          hasNextPage={!!nextPage}
-          hasPrevPage={!!prevPage}
-          goToPage={goToPage}
-        />
-      </div>
+      {/* Pagination component */}
+      <Pagination
+        currentPage={currentPage}
+        hasNextPage={!!nextPage}
+        hasPrevPage={!!prevPage}
+        goToPage={goToPage}
+      />
     </div>
   );
 };

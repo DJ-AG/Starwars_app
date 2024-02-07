@@ -1,37 +1,68 @@
 import React, { useState, useEffect } from 'react';
-import { fetchFilms } from '../../services/swapi'; // Adjust the import path as necessary
+import { fetchFilms, fetchSpecies, fetchPlanets } from '../../services/swapi';
 
-interface FilmFilterProps {
-  onFilterChange: (filmId: string | null) => void; // Adjusted the type to accept null
+interface FilterProps {
+  onFilterChange: (filterType: string, id: string | null) => void;
 }
 
-const Filter: React.FC<FilmFilterProps> = ({ onFilterChange }) => {
+const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
   const [films, setFilms] = useState<{ title: string; id: string }[]>([]);
+  const [species, setSpecies] = useState<{ name: string; id: string }[]>([]);
+  const [planets, setPlanets] = useState<{ name: string; id: string }[]>([]);
 
+  // Fetch films, species, and planets data on component mount
   useEffect(() => {
-    const initFilms = async () => {
-      const fetchedFilms = await fetchFilms();
-      setFilms(fetchedFilms);
+    const fetchData = async () => {
+      const filmsData = await fetchFilms();
+      const speciesData = await fetchSpecies();
+      const planetsData = await fetchPlanets();
+      setFilms(filmsData);
+      setSpecies(speciesData);
+      setPlanets(planetsData);
     };
-
-    initFilms();
+    fetchData();
   }, []);
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    onFilterChange(value !== '' ? value : null); // Pass null for the "none" option
-  };
+  const handleFilterChange =
+    (filterType: string) => (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = event.target.value;
+      onFilterChange(filterType, value !== '' ? value : null);
+    };
 
   return (
-    <select defaultValue="" onChange={handleFilterChange}>
-      <option value="">None</option>{' '}
-      {/* This option allows users to reset the filter */}
-      {films.map((film) => (
-        <option key={film.id} value={film.id}>
-          {film.title}
-        </option>
-      ))}
-    </select>
+    <div className="filter-container">
+      <div className="filter-header">Filter by:</div>
+      {/* Film Filter */}
+      <select onChange={handleFilterChange('film')} className="filter-select">
+        <option value="">Film</option>
+        {films.map((film) => (
+          <option key={film.id} value={film.id}>
+            {film.title}
+          </option>
+        ))}
+      </select>
+      {/* Species Filter */}
+      <select
+        onChange={handleFilterChange('species')}
+        className="filter-select"
+      >
+        <option value="">Species</option>
+        {species.map((specie) => (
+          <option key={specie.id} value={specie.id}>
+            {specie.name}
+          </option>
+        ))}
+      </select>
+      {/* Homeworld Filter */}
+      <select onChange={handleFilterChange('planet')} className="filter-select">
+        <option value="">Homeworld</option>
+        {planets.map((planet) => (
+          <option key={planet.id} value={planet.id}>
+            {planet.name}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 };
 

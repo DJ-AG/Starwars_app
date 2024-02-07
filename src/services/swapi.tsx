@@ -55,3 +55,53 @@ export const fetchCharacterDetailsByUrl = async (characterUrl: string) => {
     throw error;
   }
 };
+
+export const fetchSpecies = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}species/`);
+    console.log('Species', response.data.results);
+    return response.data.results.map((species) => ({
+      name: species.name,
+      id: species.url.match(/\/species\/(\d+)\//)[1]
+    }));
+  } catch (error) {
+    console.error('Error fetching species:', error);
+    throw error;
+  }
+};
+
+export const fetchPlanets = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}planets/`);
+    console.log('Planets', response.data.results);
+    return response.data.results.map((planet) => ({
+      name: planet.name,
+      id: planet.url.match(/\/planets\/(\d+)\//)[1]
+    }));
+  } catch (error) {
+    console.error('Error fetching planets:', error);
+    throw error;
+  }
+};
+
+export const fetchSpeciesDetails = async (speciesId: string) => {
+  try {
+    const response = await axios.get(`${BASE_URL}species/${speciesId}/`);
+    console.log('Species Details', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching species details:', error);
+    throw error;
+  }
+};
+
+export const fetchPlanetDetails = async (planetId: string) => {
+  try {
+    const response = await axios.get(`${BASE_URL}planets/${planetId}/`);
+    console.log('Planet Details', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching planet details:', error);
+    throw error;
+  }
+};
