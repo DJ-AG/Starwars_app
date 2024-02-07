@@ -11,3 +11,14 @@ export const fetchCharacters = async (page: number) => {
     throw error;
   }
 };
+
+export const fetchCharacterByName = async (searchTerm: string) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/people/?search=${searchTerm}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

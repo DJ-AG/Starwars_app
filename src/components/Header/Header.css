@@ -1,0 +1,14 @@
+.header {
+    background-color: #282727; /* Your style may vary */
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .header input {
+    padding: 8px;
+    margin-right: 4px;
+  }
+  
+  .header button {
+    padding: 8px;
+  }
