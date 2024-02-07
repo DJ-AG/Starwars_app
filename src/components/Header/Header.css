@@ -1,100 +1,88 @@
 .header {
-    background-color: #282727;
-    padding: 30px;
-    padding-bottom: 0;
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 999;
-  }
-  
-  .header > .header-logo > img {
-    object-fit: contain;
-    margin-top: -50px;
-    margin-bottom: -30px;
-    height: 180px;
-    filter: brightness(0) invert(1);
-  }
+  background-color: #282727;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 999;
+  /* Reduced the padding to make the header smaller */
+  padding: 0.5rem 0;
+}
 
-  .header-logo {
-    flex-grow: 1; 
-    display: flex;
-    justify-content: center; 
-  }
-  
-  .header-search {
-    width: 26px;
-    min-width: 26px;
-    border-radius: 4px;
-    background-color: #343434;
-    box-shadow: none;
-    border: 0;
-    position: relative;
-    width: 248px;
-    opacity: 0.7;
-    height: 40px;
-    transition: opacity 350ms;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-  }
+.header-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .HeaderSearch:focus-within {
-    opacity: 1;
-  }
-  
-  .header-search input {
-    background: transparent;
-    outline: none;
-    border: none;
-    font-weight: 400;
-    font-family: inherit;
-    font-size: 15px;
-    color: #ffffff;
-  }
-  
-  .header-search input::placeholder {
-    opacity: 1;
-    color: #ffffff;
-  }
-  
-  .header-search > img {
-    object-fit: contain;
-    height: 20px;
-  }
-  
-  .header-actions {
-    width: 100%;
-    margin-top: 10px;
-    color: #999;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  
-  .header-actions > button {
-    background: transparent;
-    font-family: inherit;
-    font-weight: 600;
-    border: none;
-    color: #ddd;
-    font-size: 14px;
-    cursor: pointer;
-    transition: color 200ms;
-    letter-spacing: 2px;
-  }
-  
-  .header-actions > button:hover {
-    color: #9e4f60;
-  }
-  
-  .header-actions > span {
-    color: #343434;
-    font-size: 1.125em;
-    font-weight: 500;
-  }
+.header-logo {
+  display: flex;
+  justify-content: center;
+  /* Reduce margin to adjust the logo's vertical spacing */
+  margin-bottom: 0.5rem;
+}
+
+.header-logo img {
+  /* Adjust the logo's size to ensure the header height is reduced */
+  max-height: 100px; /* Adjusted from 180px */
+  filter: brightness(0) invert(1);
+}
+
+
+.header-search {
+  display: flex;
+  width: 100%;
+  max-width: 600px; /* Set a max-width for the search bar */
+  background-color: #343434;
+  border-radius: 4px;
+  opacity: 0.7;
+  transition: opacity 350ms;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+
+.header-search input {
+  flex-grow: 1;
+  background: transparent;
+  outline: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.header-search img {
+  height: 1.25rem;
+}
+
+.header-search:focus-within {
+  opacity: 1;
+}
+
+.header-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 0;
+}
+
+.header-actions button {
+  background: transparent;
+  color: #ddd;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: color 200ms;
+  letter-spacing: 0.125rem;
+}
+
+.header-actions button:hover {
+  color: #9e4f60;
+}

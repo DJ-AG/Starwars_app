@@ -1,11 +1,12 @@
 .CharacterContainer {
     border-radius: 6px;
     width: 266px;
-    background-color: #282727;
+    background-color: #353434;
     position: relative;
     transition: all 0.25s ease;
     overflow: hidden;
     z-index: 1;
+    box-shadow: .3px .3px 1px 1px #9e4f60;
   }
   
   .CharacterContainer:hover {
@@ -48,3 +49,5 @@
     transform: scaleY(-1);
     background-position: -100% 0;
   }
+
+  

@@ -16,21 +16,19 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onFilterChange }) => {
   };
 
   return (
-    <div className="header">
-      <Filter onFilterChange={onFilterChange} />
-      <div className="header-left"></div>
-      <div className="header-logo">
-        <img
-          src="https://download.logo.wine/logo/Star_Wars/Star_Wars-Logo.wine.png"
-          alt="Star Wars Logo"
-        />
-      </div>
-
-      <div className="header-right">
+    <header className="header">
+      <div className="header-content">
+        <div className="header-logo">
+          <img
+            src="https://download.logo.wine/logo/Star_Wars/Star_Wars-Logo.wine.png"
+            alt="Star Wars Logo"
+          />
+        </div>
         <div className="header-search">
           <input
             type="text"
             placeholder="Search Star Wars Character"
+            value={searchTerm}
             onChange={handleSearchChange}
           />
           <img
@@ -38,11 +36,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onFilterChange }) => {
             alt="Search Icon"
           />
         </div>
-        <div className="header-actions">
-          <button>SIGN OUT</button>
-        </div>
       </div>
-    </div>
+      <Filter onFilterChange={onFilterChange} />
+    </header>
   );
 };
 

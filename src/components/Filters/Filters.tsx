@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchFilms, fetchSpecies, fetchPlanets } from '../../services/swapi';
+import './Filters.css';
 
 interface FilterProps {
   onFilterChange: (filterType: string, id: string | null) => void;
@@ -31,37 +32,45 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
 
   return (
     <div className="filter-container">
-      <div className="filter-header">Filter by:</div>
       {/* Film Filter */}
-      <select onChange={handleFilterChange('film')} className="filter-select">
-        <option value="">Film</option>
-        {films.map((film) => (
-          <option key={film.id} value={film.id}>
-            {film.title}
-          </option>
-        ))}
-      </select>
+      <div className="filter-wrapper">
+        <select onChange={handleFilterChange('film')} className="filter-select">
+          <option value="">Film</option>
+          {films.map((film) => (
+            <option key={film.id} value={film.id}>
+              {film.title}
+            </option>
+          ))}
+        </select>
+      </div>
       {/* Species Filter */}
-      <select
-        onChange={handleFilterChange('species')}
-        className="filter-select"
-      >
-        <option value="">Species</option>
-        {species.map((specie) => (
-          <option key={specie.id} value={specie.id}>
-            {specie.name}
-          </option>
-        ))}
-      </select>
+      <div className="filter-wrapper">
+        <select
+          onChange={handleFilterChange('species')}
+          className="filter-select"
+        >
+          <option value="">Species</option>
+          {species.map((specie) => (
+            <option key={specie.id} value={specie.id}>
+              {specie.name}
+            </option>
+          ))}
+        </select>
+      </div>
       {/* Homeworld Filter */}
-      <select onChange={handleFilterChange('planet')} className="filter-select">
-        <option value="">Homeworld</option>
-        {planets.map((planet) => (
-          <option key={planet.id} value={planet.id}>
-            {planet.name}
-          </option>
-        ))}
-      </select>
+      <div className="filter-wrapper">
+        <select
+          onChange={handleFilterChange('planet')}
+          className="filter-select"
+        >
+          <option value="">Homeworld</option>
+          {planets.map((planet) => (
+            <option key={planet.id} value={planet.id}>
+              {planet.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 };

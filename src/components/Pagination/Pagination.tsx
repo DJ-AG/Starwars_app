@@ -5,6 +5,7 @@ interface PaginationProps {
   currentPage: number;
   hasNextPage: boolean;
   hasPrevPage: boolean;
+  totalPage: number;
   goToPage: (page: number) => void;
 }
 
@@ -12,6 +13,7 @@ const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   hasNextPage,
   hasPrevPage,
+  totalPage,
   goToPage
 }) => {
   return (
@@ -24,7 +26,9 @@ const Pagination: React.FC<PaginationProps> = ({
           Previous
         </button>
       )}
-      <span className="currentPage">{currentPage}</span>
+      <span className="currentPage">
+        {currentPage} / {totalPage}
+      </span>
       {hasNextPage && (
         <button
           className="paginationButton"

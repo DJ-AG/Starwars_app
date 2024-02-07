@@ -3,16 +3,27 @@
   flex-direction: column;
   align-items: center;
   margin: auto;
-  max-width: 100vw; /* Adjust this value based on your design */
+  max-width: calc(100vw - 40px); /* Subtract the desired total horizontal padding */
+  padding: 0 20px; /* Add horizontal padding */
 }
 
 .card-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 15rem; /* Adjust this value to be the header's height plus 10px */
+  gap: 10px;
+  padding-bottom: 20px;
 }
 
-.card-container > div {
-  margin: 5px;
+/* Responsive gap for smaller screens, if needed */
+@media (max-width: 768px) {
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 22rem;
+    gap: 10px;
+    padding-bottom: 20px;
+}
 }

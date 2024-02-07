@@ -31,6 +31,7 @@ const Landing: React.FC = () => {
     species: null,
     planet: null
   });
+  const [totalPages, setTotalPages] = useState(0);
 
   // Load characters when page first renders or currentPage changes
   useEffect(() => {
@@ -44,6 +45,8 @@ const Landing: React.FC = () => {
       const data = await fetchCharacters(page);
       setCharacters(data.results);
       updatePagination(data.next, data.previous);
+      const pages = Math.ceil(data.count / 10);
+      setTotalPages(pages);
     } catch (error) {
       console.error('Failed to fetch characters:', error);
     } finally {
@@ -194,6 +197,7 @@ const Landing: React.FC = () => {
         currentPage={currentPage}
         hasNextPage={!!nextPage}
         hasPrevPage={!!prevPage}
+        totalPage={totalPages}
         goToPage={goToPage}
       />
     </div>
