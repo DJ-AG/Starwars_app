@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login/Login';
-// import Landing from './pages/Landing/Landing';
+import Landing from './pages/Landing/Landing';
 import { AuthProvider, useAuth } from './context/authContext';
 import './App.css';
 

@@ -32,7 +32,7 @@
     transition: color 125ms;
   }
   
-  .CharacterContainer > h1:hover {
+  .CharacterContainer:hover > h1 {
     color: #9e4f60;
   }
   

@@ -28,7 +28,7 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="login_wrapper">
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>

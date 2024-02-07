@@ -9,7 +9,7 @@
     letter-spacing: 0.1em;
   }
   
-  button {
+  .login_wrapper > button {
     width: 100%;
     margin-top: 1rem;
     padding: 0.5rem 1rem;
