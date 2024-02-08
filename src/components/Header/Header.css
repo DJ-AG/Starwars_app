@@ -23,14 +23,24 @@
 }
 
 .arrow {
-  color: #9e4f60 ;
+  color: #9e4f60;
   font-size: 3rem;
   cursor: pointer;
-  margin: auto;
-  position: absolute;
-  left: 45%;
-  bottom: -4rem;
 }
+
+.arrow:hover {
+  color: #753a47;
+}
+
+.toggle-header-button {
+  position: absolute;
+  background: none;
+  bottom: -5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border: none;
+}
+
 
 .header-content {
   width: 100%;
@@ -48,14 +58,14 @@
 }
 
 .header-logo img {
-  max-height: 100px; 
+  max-height: 100px;
   filter: brightness(0) invert(1);
 }
 
 .header-search {
   display: flex;
   width: 100%;
-  max-width: 600px; 
+  max-width: 600px;
   background-color: #343434;
   border-radius: 4px;
   opacity: 0.7;
@@ -80,12 +90,6 @@
 
 .header-search:focus-within {
   opacity: 1;
-}
-
-
-
-.toggle-header-button img {
-  height: 2rem;
 }
 
 .header-actions {
@@ -118,9 +122,9 @@
   border-radius: 0.25rem;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
-  position: absolute; 
-  top: 0.5rem; 
-  right: 1rem; 
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
 }
 
 .logout-button:hover {
@@ -131,7 +135,7 @@
 @media (max-width: 768px) {
   .header-search {
     width: 70%;
-    max-width: 600px; 
+    max-width: 600px;
   }
   .logout-button {
     padding: 0.25rem 0.5rem;
@@ -141,10 +145,16 @@
   }
 
   .header-logo img {
-    max-height: 80px; 
+    max-height: 80px;
   }
 
   .header-search {
-    width: 90%; 
+    width: 90%;
+  }
+}
+
+@media (min-width: 769px) {
+  .toggle-header-button {
+    display: none;
   }
 }

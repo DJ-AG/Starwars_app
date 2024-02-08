@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Header.css';
 import Filter from '../Filters/Filters';
 import { useAuth } from '../../context/authContext';
@@ -46,6 +46,27 @@ const Header: React.FC<HeaderProps> = ({
     setIsHeaderVisible((prev) => !prev);
   };
 
+  // Use useEffect to handle initial screen size and resize events
+  useEffect(() => {
+    const handleResize = () => {
+      // Check if screen width is less than or equal to 768 pixels (mobile)
+      if (window.innerWidth <= 768) {
+        setIsHeaderVisible(true); // Always show header on mobile
+      }
+    };
+
+    // Add event listener for window resize
+    window.addEventListener('resize', handleResize);
+
+    // Call handleResize initially to set the initial state
+    handleResize();
+
+    // Remove event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <header className={`header ${isHeaderVisible ? 'visible' : 'hidden'}`}>
       <div className="header-content">
@@ -75,13 +96,19 @@ const Header: React.FC<HeaderProps> = ({
         species={species}
         planets={planets}
       />
-      <button className="toggle-header-button" onClick={toggleHeaderVisibility}>
-        {isHeaderVisible ? (
-          <FontAwesomeIcon icon={faCircleArrowUp} className="arrow" />
-        ) : (
-          <FontAwesomeIcon icon={faCircleDown} className="arrow" />
-        )}
-      </button>
+      {/* Conditionally render the toggle button */}
+      {isAuthenticated && window.innerWidth <= 768 && (
+        <button
+          className="toggle-header-button"
+          onClick={toggleHeaderVisibility}
+        >
+          {isHeaderVisible ? (
+            <FontAwesomeIcon icon={faCircleArrowUp} className="arrow" />
+          ) : (
+            <FontAwesomeIcon icon={faCircleDown} className="arrow" />
+          )}
+        </button>
+      )}
       {isAuthenticated && (
         <button className="logout-button" onClick={logout}>
           Logout
