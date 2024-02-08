@@ -2,7 +2,7 @@ export type CharacterType = {
   name?: string;
   bornLocation?: string;
   diedLocation?: string;
-  homeworld?: string;
+  homeworldDetails?: string;
   affiliations?: string[];
   apprentices?: string[];
   gender?: string;

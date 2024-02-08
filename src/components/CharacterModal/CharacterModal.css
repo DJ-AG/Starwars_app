@@ -38,6 +38,11 @@
     color: #ddd;
     margin-bottom: 10px;
   }
+  .character-info > h1, .character-info > h4, .character-info > p, .character-info > a, .character-info > span, .character-info > ul > li {
+    color: #ddd;
+    margin-bottom: 10px;
+    list-style: none;
+  }
   
   .character-info > p, .character-info > a {
     color: #9e4f60;
@@ -52,6 +57,10 @@
   }
   
   .character-info > span {
+    color: #aaa;
+    text-transform: capitalize;
+  }
+  .character-info > ul > li > span {
     color: #aaa;
     text-transform: capitalize;
   }

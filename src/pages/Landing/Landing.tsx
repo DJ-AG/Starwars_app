@@ -94,9 +94,26 @@ const Landing: React.FC = () => {
   }, 300);
 
   // Open character modal on click
-  const handleCharacterClick = (character: CharacterProps) => {
-    setSelectedCharacter(character);
-    setIsModalOpen(true);
+  const handleCharacterClick = async (character: CharacterProps) => {
+    setIsLoading(true);
+    try {
+      const detailedCharacter = await fetchCharacterDetailsByUrl(character.url);
+      // Extract the ID from the homeworld URL
+      const homeworldId =
+        detailedCharacter.homeworld.match(/\/planets\/(\d+)\//)[1];
+      if (homeworldId) {
+        const homeworldDetails = await fetchPlanetDetails(homeworldId);
+        // Add homeworld details to the character object
+        detailedCharacter.homeworldDetails = homeworldDetails;
+      }
+      setSelectedCharacter(detailedCharacter);
+    } catch (error) {
+      console.error('Failed to fetch character or homeworld details:', error);
+      // Handle error state appropriately
+    } finally {
+      setIsLoading(false);
+      setIsModalOpen(true); // Open the modal only after fetching details
+    }
   };
 
   // Close character modal

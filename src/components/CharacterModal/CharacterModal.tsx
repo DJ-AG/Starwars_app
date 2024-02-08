@@ -14,7 +14,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   const locations = [
     character.bornLocation,
     character.diedLocation,
-    character.homeworld
+    character.homeworldDetails
   ].filter((value, index, self) => value && self.indexOf(value) === index);
 
   return (
@@ -43,14 +43,21 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 ))}
               </>
             )}
-            {locations.length > 0 && (
-              <>
-                <h4>LOCATIONS</h4>
-                {locations.map((location, index) => (
-                  <p key={index}>{location}</p>
-                ))}
-              </>
-            )}
+            <h4>Homeworld</h4>
+            <ul>
+              <li>
+                <span>Name: {character.homeworldDetails.name}</span>
+              </li>
+              <li>
+                <span>Terrain: {character.homeworldDetails.terrain}</span>
+              </li>
+              <li>
+                <span>Climate: {character.homeworldDetails.climate}</span>
+              </li>
+              <li>
+                <span>Population: {character.homeworldDetails.population}</span>
+              </li>
+            </ul>
             <h4>GENDER</h4>
             <span>{character.gender}</span>
             <h4>DIMENSIONS</h4>
