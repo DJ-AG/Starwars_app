@@ -136,11 +136,23 @@ const Landing: React.FC = () => {
           detailedCharacter.homeworld.match(/\/planets\/(\d+)\/$/)[1];
         if (homeworldId) {
           const homeworldDetails = await fetchPlanetDetails(homeworldId);
-          detailedCharacter.homeworldDetails = {
-            name: homeworldDetails.name,
-            terrain: homeworldDetails.terrain,
-            climate: homeworldDetails.climate,
-            population: homeworldDetails.population
+          detailedCharacter.homeworldDetails = homeworldDetails;
+        }
+      }
+
+      // Fetch species details if species URL is present
+      if (detailedCharacter.species && detailedCharacter.species.length > 0) {
+        const speciesId =
+          detailedCharacter.species[0].match(/\/species\/(\d+)\/$/)[1];
+        if (speciesId) {
+          const speciesDetails = await fetchSpeciesDetails(speciesId);
+          detailedCharacter.speciesDetails = {
+            name: speciesDetails.name,
+            classification: speciesDetails.classification,
+            designation: speciesDetails.designation,
+            averageHeight: speciesDetails.average_height,
+            language: speciesDetails.language
+            // Add other details you want to display
           };
         }
       }

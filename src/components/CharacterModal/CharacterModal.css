@@ -10,16 +10,18 @@
   border-radius: 8px;
   position: relative;
   box-shadow: .3px .3px 1px 1px #9e4f60;
-  
+ 
 }
   
-  .modal-content > img {
+  .character-image{
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
-    width: 50vw;
-    object-fit: contain;
-    border-right: 2px solid #9e4f60;
-    background-color: #151515;
+    width: 20vw; 
+    height: 55vh;
+    object-fit: cover; 
+    object-position: center;
+    border-right: 4px solid #9e4f60;
+    background-color: #282727;
   }
   
   .character-info {
@@ -32,6 +34,7 @@
     background-repeat: repeat-x;
     background-position: top left;
     background-color: #282727;
+    
   }
   
   .character-info > h1, .character-info > h4, .character-info > p, .character-info > a, .character-info > span {

@@ -105,3 +105,21 @@ export const fetchPlanetDetails = async (planetId: string) => {
     throw error;
   }
 };
+
+export const fetchCharacterImageByName = async (name: string) => {
+  try {
+    // Use the base URL for the new API
+    const baseURL = 'https://akabab.github.io/starwars-api/api';
+    // Fetch all characters
+    const allCharactersResponse = await axios.get(`${baseURL}/all.json`);
+    // Find the character by name
+    const character = allCharactersResponse.data.find(
+      (char: any) => char.name === name
+    );
+    // Return the image URL if the character is found, otherwise return null
+    return character ? character.image : null;
+  } catch (error) {
+    console.error('Error fetching character image by name:', error);
+    throw error;
+  }
+};

@@ -1,7 +1,8 @@
 // CharacterModal.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './CharacterModal.css';
 import { UnifiedCharacterType } from '../../types';
+import { fetchCharacterImageByName } from '../../services/swapi'; // Make sure the path is correct
 
 interface CharacterModalProps {
   character: UnifiedCharacterType;
@@ -12,13 +13,30 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   character,
   closeModal
 }) => {
-  console.log(character);
+  const [imageSrc, setImageSrc] = useState<string>('https://placehold.co/400');
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        const imageUrl = await fetchCharacterImageByName(character.name);
+        if (imageUrl) {
+          setImageSrc(imageUrl);
+        }
+      } catch (error) {
+        // Handle any errors here, possibly set a default image if the API call fails
+        console.error(error);
+      }
+    };
+
+    loadImage();
+  }, [character.name]);
   return (
     <div className="modal-backdrop" onClick={closeModal}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-container">
           <img
-            src={character.image || 'https://placehold.co/400'}
+            className="character-image"
+            src={imageSrc || 'https://placehold.co/400'}
             alt={character.name}
           />
           <div className="character-info">
@@ -64,15 +82,35 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
               </>
             )}
             <h4>GENDER</h4>
-            <span>{character.gender}</span>
+            <ul>
+              <li>
+                <span>{character.gender}</span>
+              </li>
+            </ul>
             <h4>DIMENSIONS</h4>
-            <span>Height: {character.height}m</span>
-            <h4>SPECIES</h4>
-            <span>{character.species}</span>
-            <h4>WIKI</h4>
-            <a href={character.wiki} target="_blank" rel="noreferrer">
-              Read more about {character.name}
-            </a>
+            <ul>
+              <li>
+                <span>Height: {character.height}m</span>
+              </li>
+            </ul>
+            {character.speciesDetails && (
+              <>
+                <h4>SPECIES</h4>
+                <ul>
+                  <li>
+                    <span>Name: {character.speciesDetails.name}</span>
+                  </li>
+                  <li>
+                    <span>
+                      Classification: {character.speciesDetails.classification}
+                    </span>
+                  </li>
+                  <li>
+                    <span>Language: {character.speciesDetails.language}</span>
+                  </li>
+                </ul>
+              </>
+            )}
           </div>
         </div>
       </div>

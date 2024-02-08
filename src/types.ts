@@ -11,6 +11,12 @@ export interface UnifiedCharacterType {
     climate: string;
     population: string;
   };
+  speciesDetails?: {
+    name: string;
+    classification: string;
+    designation: string;
+    language: string;
+  };
   affiliations?: string[];
   apprentices?: string[];
   gender?: string;
