@@ -131,6 +131,19 @@ const Landing: React.FC = () => {
       const detailedCharacter = await fetchCharacterDetailsByUrl(
         characterProp.url
       );
+      if (detailedCharacter.homeworld) {
+        const homeworldId =
+          detailedCharacter.homeworld.match(/\/planets\/(\d+)\/$/)[1];
+        if (homeworldId) {
+          const homeworldDetails = await fetchPlanetDetails(homeworldId);
+          detailedCharacter.homeworldDetails = {
+            name: homeworldDetails.name,
+            terrain: homeworldDetails.terrain,
+            climate: homeworldDetails.climate,
+            population: homeworldDetails.population
+          };
+        }
+      }
       setSelectedCharacter(detailedCharacter);
     } catch (error) {
       console.error('Failed to fetch character details:', error);

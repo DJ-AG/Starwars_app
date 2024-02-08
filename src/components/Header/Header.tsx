@@ -46,26 +46,23 @@ const Header: React.FC<HeaderProps> = ({
     setIsHeaderVisible((prev) => !prev);
   };
 
-  // Use useEffect to handle initial screen size and resize events
   useEffect(() => {
     const handleResize = () => {
-      // Check if screen width is less than or equal to 768 pixels (mobile)
+      console.log('Window width:', window.innerWidth); // Log window width
       if (window.innerWidth <= 768) {
         setIsHeaderVisible(true); // Always show header on mobile
       }
     };
 
-    // Add event listener for window resize
     window.addEventListener('resize', handleResize);
-
-    // Call handleResize initially to set the initial state
     handleResize();
 
-    // Remove event listener on component unmount
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  console.log('isAuthenticated:', isAuthenticated); // Log isAuthenticated status
 
   return (
     <header className={`header ${isHeaderVisible ? 'visible' : 'hidden'}`}>
