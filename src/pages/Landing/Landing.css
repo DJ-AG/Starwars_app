@@ -16,9 +16,6 @@
   padding-bottom: 20px;
 }
 
-.hidden {
-  display: none;
-}
 /* Responsive gap for smaller screens, if needed */
 @media (max-width: 768px) {
   .card-container {
@@ -28,8 +25,5 @@
     margin-top: 25rem;
     gap: 10px;
     padding-bottom: 20px;
-}
-.hidden {
-  display: none;
 }
 }
