@@ -18,12 +18,12 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   ].filter((value, index, self) => value && self.indexOf(value) === index);
 
   return (
-    <div className="ModalBackdrop" onClick={closeModal}>
-      <div className="ModalContent" onClick={(e) => e.stopPropagation()}>
-        <div className="ModalContainer">
+    <div className="modal-backdrop" onClick={closeModal}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-container">
           <img src="https://placehold.co/400" alt={character.name} />
-          <div className="CharacterInfo">
-            <button className="CloseButton" onClick={closeModal}>
+          <div className="character-info">
+            <button className="close-button" onClick={closeModal}>
               X
             </button>
             <h1>{character.name}</h1>

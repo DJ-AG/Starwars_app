@@ -54,6 +54,22 @@ const Landing: React.FC = () => {
     }
   };
 
+  const resetFilters = async () => {
+    // Start loading and clear characters
+    setIsLoading(true);
+    setCharacters([]);
+
+    // Reset the selected filters state
+    setSelectedFilters({
+      film: null,
+      species: null,
+      planet: null
+    });
+
+    // Fetch all characters without filters
+    await loadCharacters();
+  };
+
   // Update pagination state
   const updatePagination = (next: string | null, previous: string | null) => {
     setNextPage(next ? new URL(next).searchParams.get('page') : null);
@@ -94,9 +110,13 @@ const Landing: React.FC = () => {
     filterType: string,
     filterValue: string | null
   ) => {
-    const updatedFilters = { ...selectedFilters, [filterType]: filterValue };
-    setSelectedFilters(updatedFilters);
-    applyFilters(updatedFilters);
+    if (filterType === 'reset') {
+      resetFilters();
+    } else {
+      const updatedFilters = { ...selectedFilters, [filterType]: filterValue };
+      setSelectedFilters(updatedFilters);
+      applyFilters(updatedFilters);
+    }
   };
 
   // Apply filters and fetch filtered characters
@@ -175,31 +195,37 @@ const Landing: React.FC = () => {
       <Header
         onSearch={handleSearchByName}
         onFilterChange={handleFilterChange}
+        selectedFilters={selectedFilters}
       />
+
       {/* Loader component to indicate loading state */}
-      {isLoading && <Loader />}
-      {/* Container to display character cards */}
-      <div className="card-container">
-        {characters.map((character, index) => (
-          <Character
-            key={index}
-            character={character}
-            onClick={() => handleCharacterClick(character)}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="card-container">
+          {characters.map((character, index) => (
+            <Character
+              key={index}
+              character={character}
+              onClick={() => handleCharacterClick(character)}
+            />
+          ))}
+        </div>
+      )}
       {/* Character modal component */}
       {isModalOpen && selectedCharacter && (
         <CharacterModal character={selectedCharacter} closeModal={closeModal} />
       )}
       {/* Pagination component */}
-      <Pagination
-        currentPage={currentPage}
-        hasNextPage={!!nextPage}
-        hasPrevPage={!!prevPage}
-        totalPage={totalPages}
-        goToPage={goToPage}
-      />
+      {!isLoading && (
+        <Pagination
+          currentPage={currentPage}
+          hasNextPage={!!nextPage}
+          hasPrevPage={!!prevPage}
+          totalPage={totalPages}
+          goToPage={goToPage}
+        />
+      )}
     </div>
   );
 };

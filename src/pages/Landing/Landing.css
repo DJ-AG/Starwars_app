@@ -11,18 +11,21 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-top: 15rem; /* Adjust this value to be the header's height plus 10px */
+  margin-top: 19rem; /* Adjust this value to be the header's height plus 10px */
   gap: 10px;
   padding-bottom: 20px;
 }
 
+.hidden {
+  display: none;
+}
 /* Responsive gap for smaller screens, if needed */
 @media (max-width: 768px) {
   .card-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 22rem;
+    margin-top: 23rem;
     gap: 10px;
     padding-bottom: 20px;
 }

@@ -19,6 +19,24 @@
   color: #ffffff;
   border: none;
 }
+.filter-reset-button {
+  padding: 0.5rem 1rem;
+  border: 2px solid #9e4f60;
+  background-color: transparent;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin-left: 1rem;
+}
+
+.filter-reset-button:hover {
+  background-color: #9e4f60;
+  color: #282727;
+}
+
 
 @media (max-width: 768px) { /* Adjust breakpoint as needed */
   .filter-wrapper {
@@ -29,4 +47,9 @@
   .filter-container {
     flex-direction: column; /* Stack filters vertically on mobile */
   }
+  .filter-reset-button {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+}
 }

@@ -4,9 +4,14 @@ import './Filters.css';
 
 interface FilterProps {
   onFilterChange: (filterType: string, id: string | null) => void;
+  selectedFilters: {
+    film: string | null;
+    species: string | null;
+    planet: string | null;
+  };
 }
 
-const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
+const Filter: React.FC<FilterProps> = ({ onFilterChange, selectedFilters }) => {
   const [films, setFilms] = useState<{ title: string; id: string }[]>([]);
   const [species, setSpecies] = useState<{ name: string; id: string }[]>([]);
   const [planets, setPlanets] = useState<{ name: string; id: string }[]>([]);
@@ -34,8 +39,12 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
     <div className="filter-container">
       {/* Film Filter */}
       <div className="filter-wrapper">
-        <select onChange={handleFilterChange('film')} className="filter-select">
-          <option value="">Film</option>
+        <select
+          value={selectedFilters.film || ''}
+          onChange={handleFilterChange('film')}
+          className="filter-select"
+        >
+          <option value="">Filte by Film</option>
           {films.map((film) => (
             <option key={film.id} value={film.id}>
               {film.title}
@@ -46,10 +55,11 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
       {/* Species Filter */}
       <div className="filter-wrapper">
         <select
+          value={selectedFilters.species || ''}
           onChange={handleFilterChange('species')}
           className="filter-select"
         >
-          <option value="">Species</option>
+          <option value="">Filter by Species</option>
           {species.map((specie) => (
             <option key={specie.id} value={specie.id}>
               {specie.name}
@@ -60,10 +70,11 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
       {/* Homeworld Filter */}
       <div className="filter-wrapper">
         <select
+          value={selectedFilters.planet || ''}
           onChange={handleFilterChange('planet')}
           className="filter-select"
         >
-          <option value="">Homeworld</option>
+          <option value="">Filter by Homeworld</option>
           {planets.map((planet) => (
             <option key={planet.id} value={planet.id}>
               {planet.name}
@@ -71,6 +82,13 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange }) => {
           ))}
         </select>
       </div>
+      {/* Reset Button */}
+      <button
+        className="filter-reset-button"
+        onClick={() => onFilterChange('reset', null)}
+      >
+        Reset Filters
+      </button>
     </div>
   );
 };

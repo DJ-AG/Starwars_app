@@ -1,11 +1,19 @@
-.ModalContainer {
+.modal-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   border-radius: 6px;
+} 
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: .3px .3px 1px 1px #9e4f60;
+  
 }
   
-  .ModalContainer > img {
+  .modal-content > img {
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
     width: 50vw;
@@ -14,7 +22,7 @@
     background-color: #151515;
   }
   
-  .CharacterInfo {
+  .character-info {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
     width: 30vw;
@@ -26,29 +34,29 @@
     background-color: #282727;
   }
   
-  .CharacterInfo > h1, .CharacterInfo > h4, .CharacterInfo > p, .CharacterInfo > a, .CharacterInfo > span {
+  .character-info > h1, .character-info > h4, .character-info > p, .character-info > a, .character-info > span {
     color: #ddd;
     margin-bottom: 10px;
   }
   
-  .CharacterInfo > p, .CharacterInfo > a {
+  .character-info > p, .character-info > a {
     color: #9e4f60;
     transition: color 125ms;
     text-transform: capitalize;
     text-decoration: none;
   }
   
-  .CharacterInfo > p:hover, .CharacterInfo > a:hover {
+  .character-info > p:hover, .character-info > a:hover {
     color: rgb(183, 104, 121);
     cursor: pointer;
   }
   
-  .CharacterInfo > span {
+  .character-info > span {
     color: #aaa;
     text-transform: capitalize;
   }
 
-  .ModalBackdrop {
+  .modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -61,15 +69,7 @@
     z-index: 1000; 
   }
   
-  .ModalContent {
-    background-color: white;
-    padding: 5px;
-    border-radius: 8px;
-    position: relative;
-    
-  }
-  
-  .CloseButton {
+  .close-button {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -78,19 +78,19 @@
 
  @media only screen and (max-width: 768px) {
 
-  .ModalContainer  {
+  .modal-container  {
     width: 70vw;
   }
 
-  .CharacterInfo {
+  .character-info {
     width: 100%;
   }
 
-  .CharacterInfo > h4 {
+  .character-info > h4 {
     margin-bottom: 0px;
   }
 
-  .ModalContainer > img {
+  .modal-container > img {
     display: none;
   }
 }

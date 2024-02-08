@@ -5,9 +5,18 @@ import Filter from '../Filters/Filters';
 interface HeaderProps {
   onSearch: (query: string) => void;
   onFilterChange: (filmId: string | null) => void;
+  selectedFilters: {
+    film: string | null;
+    species: string | null;
+    planet: string | null;
+  };
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch, onFilterChange }) => {
+const Header: React.FC<HeaderProps> = ({
+  onSearch,
+  onFilterChange,
+  selectedFilters
+}) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onFilterChange }) => {
         <div className="header-search">
           <input
             type="text"
-            placeholder="Search Star Wars Character"
+            placeholder="Search Character"
             value={searchTerm}
             onChange={handleSearchChange}
           />
@@ -37,7 +46,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onFilterChange }) => {
           />
         </div>
       </div>
-      <Filter onFilterChange={onFilterChange} />
+      <Filter
+        onFilterChange={onFilterChange}
+        selectedFilters={selectedFilters}
+      />
     </header>
   );
 };
