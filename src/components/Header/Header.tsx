@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Header.css';
 import Filter from '../Filters/Filters';
+import { useAuth } from '../../context/authContext';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -18,6 +19,7 @@ const Header: React.FC<HeaderProps> = ({
   selectedFilters
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { isAuthenticated, logout } = useAuth();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -50,6 +52,11 @@ const Header: React.FC<HeaderProps> = ({
         onFilterChange={onFilterChange}
         selectedFilters={selectedFilters}
       />
+      {isAuthenticated && (
+        <button className="logout-button" onClick={logout}>
+          Logout
+        </button>
+      )}
     </header>
   );
 };

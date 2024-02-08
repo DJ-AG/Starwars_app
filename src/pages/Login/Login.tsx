@@ -20,7 +20,14 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (credentials.username && credentials.password) {
-      login('mock-jwt-token');
+      // Simulate generating a token with an expiration time
+      const mockToken = btoa(
+        JSON.stringify({
+          sub: credentials.username, // subject of the token
+          exp: Date.now() + 5 * 60 * 1000 // token expiration (current time + 5 minutes)
+        })
+      );
+      login(mockToken);
       navigate('/characters', { replace: true });
     } else {
       alert('Please enter username and password');

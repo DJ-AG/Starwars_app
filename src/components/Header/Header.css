@@ -10,7 +10,6 @@
   right: 0;
   left: 0;
   z-index: 999;
-  /* Reduced the padding to make the header smaller */
   padding: 0.5rem 0;
 }
 
@@ -26,13 +25,12 @@
 .header-logo {
   display: flex;
   justify-content: center;
-  /* Reduce margin to adjust the logo's vertical spacing */
+
   margin-bottom: 0.5rem;
 }
 
 .header-logo img {
-  /* Adjust the logo's size to ensure the header height is reduced */
-  max-height: 100px; /* Adjusted from 180px */
+  max-height: 100px; 
   filter: brightness(0) invert(1);
 }
 
@@ -40,7 +38,7 @@
 .header-search {
   display: flex;
   width: 100%;
-  max-width: 600px; /* Set a max-width for the search bar */
+  max-width: 600px; 
   background-color: #343434;
   border-radius: 4px;
   opacity: 0.7;
@@ -87,9 +85,43 @@
   color: #9e4f60;
 }
 
+.logout-button {
+  padding: 0.5rem 1rem;
+  border: 2px solid #9e4f60;
+  background-color: transparent;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  position: absolute; 
+  top: 0.5rem; 
+  right: 1rem; 
+}
+
+.logout-button:hover {
+  background-color: #9e4f60;
+  color: #282727;
+}
+
 @media (max-width: 768px) {
   .header-search {
     width: 70%;
-    max-width: 600px; /* Set a max-width for the search bar */
+    max-width: 600px; 
+  }
+  .logout-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    top: 0.25rem;
+    right: 0.5rem;
+  }
+
+  .header-logo img {
+    max-height: 80px; 
+  }
+
+  .header-search {
+    width: 90%; 
   }
 }
