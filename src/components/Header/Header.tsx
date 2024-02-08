@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import './Header.css';
 import Filter from '../Filters/Filters';
 import { useAuth } from '../../context/authContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCircleDown,
+  faCircleArrowUp
+} from '@fortawesome/free-solid-svg-icons';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
-  onFilterChange: (filterType: string, id: string | null) => void; // Adjusted type
+  onFilterChange: (filterType: string, id: string | null) => void;
   selectedFilters: {
     film: string | null;
     species: string | null;
@@ -25,6 +30,7 @@ const Header: React.FC<HeaderProps> = ({
   planets
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true); // Track header visibility
   const { isAuthenticated, logout } = useAuth();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,8 +42,12 @@ const Header: React.FC<HeaderProps> = ({
     onFilterChange(filterType, id);
   };
 
+  const toggleHeaderVisibility = () => {
+    setIsHeaderVisible((prev) => !prev);
+  };
+
   return (
-    <header className="header">
+    <header className={`header ${isHeaderVisible ? 'visible' : 'hidden'}`}>
       <div className="header-content">
         <div className="header-logo">
           <img
@@ -58,7 +68,6 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
       </div>
-      {/* Pass the new handleFilterChange function as the onFilterChange prop */}
       <Filter
         onFilterChange={handleFilterChange}
         selectedFilters={selectedFilters}
@@ -66,6 +75,13 @@ const Header: React.FC<HeaderProps> = ({
         species={species}
         planets={planets}
       />
+      <button className="toggle-header-button" onClick={toggleHeaderVisibility}>
+        {isHeaderVisible ? (
+          <FontAwesomeIcon icon={faCircleArrowUp} className="arrow" />
+        ) : (
+          <FontAwesomeIcon icon={faCircleDown} className="arrow" />
+        )}
+      </button>
       {isAuthenticated && (
         <button className="logout-button" onClick={logout}>
           Logout

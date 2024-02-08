@@ -11,6 +11,25 @@
   left: 0;
   z-index: 999;
   padding: 0.5rem 0;
+  transition: transform 0.3s ease;
+}
+
+.visible {
+  transform: translateY(0); /* Bring the header into view */
+}
+
+.hidden {
+  transform: translateY(-100%); /* Move the header out of view */
+}
+
+.arrow {
+  color: #9e4f60 ;
+  font-size: 3rem;
+  cursor: pointer;
+  margin: auto;
+  position: absolute;
+  left: 45%;
+  bottom: -4rem;
 }
 
 .header-content {
@@ -25,7 +44,6 @@
 .header-logo {
   display: flex;
   justify-content: center;
-
   margin-bottom: 0.5rem;
 }
 
@@ -33,7 +51,6 @@
   max-height: 100px; 
   filter: brightness(0) invert(1);
 }
-
 
 .header-search {
   display: flex;
@@ -63,6 +80,12 @@
 
 .header-search:focus-within {
   opacity: 1;
+}
+
+
+
+.toggle-header-button img {
+  height: 2rem;
 }
 
 .header-actions {
