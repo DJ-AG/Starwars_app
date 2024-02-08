@@ -1,9 +1,10 @@
+// CharacterModal.tsx
 import React from 'react';
 import './CharacterModal.css';
-import { CharacterType } from '../../types';
+import { UnifiedCharacterType } from '../../types';
 
 interface CharacterModalProps {
-  character: CharacterType;
+  character: UnifiedCharacterType;
   closeModal: () => void;
 }
 
@@ -11,17 +12,14 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   character,
   closeModal
 }) => {
-  const locations = [
-    character.bornLocation,
-    character.diedLocation,
-    character.homeworldDetails
-  ].filter((value, index, self) => value && self.indexOf(value) === index);
-
   return (
     <div className="modal-backdrop" onClick={closeModal}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-container">
-          <img src="https://placehold.co/400" alt={character.name} />
+          <img
+            src={character.image || 'https://placehold.co/400'}
+            alt={character.name}
+          />
           <div className="character-info">
             <button className="close-button" onClick={closeModal}>
               X
@@ -43,21 +41,27 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 ))}
               </>
             )}
-            <h4>Homeworld</h4>
-            <ul>
-              <li>
-                <span>Name: {character.homeworldDetails.name}</span>
-              </li>
-              <li>
-                <span>Terrain: {character.homeworldDetails.terrain}</span>
-              </li>
-              <li>
-                <span>Climate: {character.homeworldDetails.climate}</span>
-              </li>
-              <li>
-                <span>Population: {character.homeworldDetails.population}</span>
-              </li>
-            </ul>
+            {character.homeworldDetails && (
+              <>
+                <h4>Homeworld</h4>
+                <ul>
+                  <li>
+                    <span>Name: {character.homeworldDetails.name}</span>
+                  </li>
+                  <li>
+                    <span>Terrain: {character.homeworldDetails.terrain}</span>
+                  </li>
+                  <li>
+                    <span>Climate: {character.homeworldDetails.climate}</span>
+                  </li>
+                  <li>
+                    <span>
+                      Population: {character.homeworldDetails.population}
+                    </span>
+                  </li>
+                </ul>
+              </>
+            )}
             <h4>GENDER</h4>
             <span>{character.gender}</span>
             <h4>DIMENSIONS</h4>

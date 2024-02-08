@@ -5,7 +5,7 @@ import { useAuth } from '../../context/authContext';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
-  onFilterChange: (filmId: string | null) => void;
+  onFilterChange: (filterType: string, id: string | null) => void; // Adjusted type
   selectedFilters: {
     film: string | null;
     species: string | null;
@@ -32,6 +32,10 @@ const Header: React.FC<HeaderProps> = ({
     onSearch(event.target.value);
   };
 
+  const handleFilterChange = (filterType: string, id: string | null) => {
+    onFilterChange(filterType, id);
+  };
+
   return (
     <header className="header">
       <div className="header-content">
@@ -54,8 +58,9 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
       </div>
+      {/* Pass the new handleFilterChange function as the onFilterChange prop */}
       <Filter
-        onFilterChange={onFilterChange}
+        onFilterChange={handleFilterChange}
         selectedFilters={selectedFilters}
         films={films}
         species={species}

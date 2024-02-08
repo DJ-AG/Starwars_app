@@ -60,7 +60,7 @@ export const fetchSpecies = async () => {
   try {
     const response = await axios.get(`${BASE_URL}species/`);
     console.log('Species', response.data.results);
-    return response.data.results.map((species) => ({
+    return response.data.results.map((species: any) => ({
       name: species.name,
       id: species.url.match(/\/species\/(\d+)\//)[1]
     }));
@@ -74,7 +74,7 @@ export const fetchPlanets = async () => {
   try {
     const response = await axios.get(`${BASE_URL}planets/`);
     console.log('Planets', response.data.results);
-    return response.data.results.map((planet) => ({
+    return response.data.results.map((planet: any) => ({
       name: planet.name,
       id: planet.url.match(/\/planets\/(\d+)\//)[1]
     }));

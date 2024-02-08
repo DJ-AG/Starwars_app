@@ -17,18 +17,15 @@ import CharacterModal from '../../components/CharacterModal/CharacterModal';
 import Header from '../../components/Header/Header';
 import Pagination from '../../components/Pagination/Pagination';
 import Loader from '../../components/Loader/Loader';
-import { CharacterProps } from '../../types';
+import { UnifiedCharacterType } from '../../types'; // Assuming this import path is correct
 
 const Landing: React.FC = () => {
-  // State management
   const [initialDataLoaded, setInitialDataLoaded] = useState(false);
-  const [characters, setCharacters] = useState<CharacterProps[]>([]);
+  const [characters, setCharacters] = useState<UnifiedCharacterType[]>([]);
   const [selectedCharacter, setSelectedCharacter] =
-    useState<CharacterProps | null>(null);
+    useState<UnifiedCharacterType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [nextPage, setNextPage] = useState<string | null>(null);
-  const [prevPage, setPrevPage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFilters, setSelectedFilters] = useState({
     film: null,
@@ -36,18 +33,16 @@ const Landing: React.FC = () => {
     planet: null
   });
   const [totalPages, setTotalPages] = useState(0);
+  const [nextPage, setNextPage] = useState<string | null>(null);
+  const [prevPage, setPrevPage] = useState<string | null>(null);
   const [films, setFilms] = useState<{ title: string; id: string }[]>([]);
   const [species, setSpecies] = useState<{ name: string; id: string }[]>([]);
   const [planets, setPlanets] = useState<{ name: string; id: string }[]>([]);
   const [areFiltersApplied, setAreFiltersApplied] = useState(false);
 
-  // Load characters when page first renders or currentPage changes
   useEffect(() => {
-    // Fetch initial data only once when the component mounts
-    const loadInitialData = async () => {
-      setIsLoading(true); // Show loading spinner
+    const fetchFiltersData = async () => {
       try {
-        loadCharacters(currentPage);
         const [filmsData, speciesData, planetsData] = await Promise.all([
           fetchFilms(),
           fetchSpecies(),
@@ -56,28 +51,42 @@ const Landing: React.FC = () => {
         setFilms(filmsData);
         setSpecies(speciesData);
         setPlanets(planetsData);
+        setInitialDataLoaded(true);
       } catch (error) {
-        console.error('Failed to fetch initial data:', error);
-      } finally {
-        setIsLoading(false); // Hide loading spinner
-        setInitialDataLoaded(true); // Indicate that initial data has been loaded
+        console.error('Failed to fetch filter data:', error);
       }
     };
 
-    if (!initialDataLoaded) {
-      loadInitialData();
-    }
-  }, [initialDataLoaded]);
+    fetchFiltersData();
+  }, []);
 
-  // Function to load characters from API
+  useEffect(() => {
+    const loadCharactersForCurrentPage = async () => {
+      setIsLoading(true);
+      try {
+        const data = await fetchCharacters(currentPage);
+        setCharacters(data.results); // Assuming fetchCharacters now correctly maps to UnifiedCharacterType
+        updatePagination(data.next, data.previous);
+        setTotalPages(Math.ceil(data.count / 10));
+      } catch (error) {
+        console.error('Failed to fetch characters:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (initialDataLoaded) {
+      loadCharactersForCurrentPage();
+    }
+  }, [currentPage, initialDataLoaded]);
+
   const loadCharacters = async (page: number = 1) => {
     setIsLoading(true);
     try {
       const data = await fetchCharacters(page);
       setCharacters(data.results);
       updatePagination(data.next, data.previous);
-      const pages = Math.ceil(data.count / 10);
-      setTotalPages(pages);
+      setTotalPages(Math.ceil(data.count / 10));
     } catch (error) {
       console.error('Failed to fetch characters:', error);
     } finally {
@@ -86,72 +95,53 @@ const Landing: React.FC = () => {
   };
 
   const resetFilters = async () => {
-    // Start loading and clear characters
     setIsLoading(true);
     setCharacters([]);
     setAreFiltersApplied(false);
-
-    // Reset the selected filters state
     setSelectedFilters({
       film: null,
       species: null,
       planet: null
     });
-
-    // Fetch all characters without filters
     await loadCharacters();
   };
 
-  // Update pagination state
   const updatePagination = (next: string | null, previous: string | null) => {
     setNextPage(next ? new URL(next).searchParams.get('page') : null);
     setPrevPage(previous ? new URL(previous).searchParams.get('page') : null);
   };
 
-  // Debounced function to handle character search by name
   const handleSearchByName = debounce(async (query: string) => {
     setIsLoading(true);
-    if (query.length === 0) {
-      loadCharacters(); // Load all characters if search query is empty
-    } else {
-      try {
-        const data = await fetchCharacterByName(query);
-        setCharacters(data.results);
-        resetPagination();
-      } catch (error) {
-        console.error('Failed to search characters:', error);
-      }
-    }
-    setIsLoading(false);
-  }, 300);
-
-  // Open character modal on click
-  const handleCharacterClick = async (character: CharacterProps) => {
-    setIsLoading(true);
     try {
-      const detailedCharacter = await fetchCharacterDetailsByUrl(character.url);
-      // Extract the ID from the homeworld URL
-      const homeworldId =
-        detailedCharacter.homeworld.match(/\/planets\/(\d+)\//)[1];
-      if (homeworldId) {
-        const homeworldDetails = await fetchPlanetDetails(homeworldId);
-        // Add homeworld details to the character object
-        detailedCharacter.homeworldDetails = homeworldDetails;
-      }
-      setSelectedCharacter(detailedCharacter);
+      const data = await fetchCharacterByName(query);
+      setCharacters(data.results);
+      setTotalPages(Math.ceil(data.count / 10));
+      resetPagination();
     } catch (error) {
-      console.error('Failed to fetch character or homeworld details:', error);
-      // Handle error state appropriately
+      console.error('Failed to search characters:', error);
     } finally {
       setIsLoading(false);
-      setIsModalOpen(true); // Open the modal only after fetching details
+    }
+  }, 300);
+
+  const handleCharacterClick = async (characterProp: UnifiedCharacterType) => {
+    setIsLoading(true);
+    try {
+      const detailedCharacter = await fetchCharacterDetailsByUrl(
+        characterProp.url
+      );
+      setSelectedCharacter(detailedCharacter);
+    } catch (error) {
+      console.error('Failed to fetch character details:', error);
+    } finally {
+      setIsLoading(false);
+      setIsModalOpen(true);
     }
   };
 
-  // Close character modal
   const closeModal = () => setIsModalOpen(false);
 
-  // Function to navigate to a specific page
   const goToPage = (page: number) => setCurrentPage(page);
 
   // Handle filter change
@@ -180,7 +170,7 @@ const Landing: React.FC = () => {
       // Fetch characters based on film filter if set
       if (filters.film) {
         const filmDetails = await fetchFilmDetails(filters.film);
-        filmDetails.characters.forEach((url) => characterUrls.add(url));
+        filmDetails.characters.forEach((url: string) => characterUrls.add(url));
       }
 
       // Fetch characters based on species filter if set
@@ -193,7 +183,9 @@ const Landing: React.FC = () => {
             )
           );
         } else {
-          speciesDetails.people.forEach((url) => characterUrls.add(url));
+          speciesDetails.people.forEach((url: string) =>
+            characterUrls.add(url)
+          );
         }
       }
 
@@ -207,7 +199,9 @@ const Landing: React.FC = () => {
             )
           );
         } else {
-          planetDetails.residents.forEach((url) => characterUrls.add(url));
+          planetDetails.residents.forEach((url: string) =>
+            characterUrls.add(url)
+          );
         }
       }
 
@@ -221,7 +215,9 @@ const Landing: React.FC = () => {
       const charactersData =
         characterUrls.size > 0
           ? await Promise.all(
-              [...characterUrls].map(fetchCharacterDetailsByUrl)
+              [...characterUrls].map((url) =>
+                fetchCharacterDetailsByUrl(url as string)
+              )
             )
           : [];
 
@@ -233,7 +229,6 @@ const Landing: React.FC = () => {
     }
   };
 
-  // Reset pagination state
   const resetPagination = () => {
     setNextPage(null);
     setPrevPage(null);
@@ -241,10 +236,8 @@ const Landing: React.FC = () => {
 
   return (
     <div className="center-container">
-      {/* Conditional rendering based on initialDataLoaded */}
       {initialDataLoaded ? (
         <>
-          {/* Header is now inside the check for initialDataLoaded */}
           <Header
             onSearch={handleSearchByName}
             onFilterChange={handleFilterChange}
@@ -253,7 +246,6 @@ const Landing: React.FC = () => {
             species={species}
             planets={planets}
           />
-          {/* Show Loader when isLoading is true for search or filter actions */}
           {isLoading ? (
             <Loader />
           ) : (
@@ -267,7 +259,6 @@ const Landing: React.FC = () => {
                   />
                 ))}
               </div>
-              {/* Character modal and pagination are only shown when not loading */}
               {isModalOpen && selectedCharacter && (
                 <CharacterModal
                   character={selectedCharacter}
@@ -287,7 +278,6 @@ const Landing: React.FC = () => {
           )}
         </>
       ) : (
-        /* Loader shown initially until initialDataLoaded is true */
         <Loader />
       )}
     </div>
