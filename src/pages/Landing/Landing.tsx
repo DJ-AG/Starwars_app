@@ -7,7 +7,10 @@ import {
   fetchCharacterDetailsByUrl,
   fetchFilmDetails,
   fetchSpeciesDetails,
-  fetchPlanetDetails
+  fetchPlanetDetails,
+  fetchFilms,
+  fetchSpecies,
+  fetchPlanets
 } from '../../services/swapi';
 import Character from '../../components/Character/Character';
 import CharacterModal from '../../components/CharacterModal/CharacterModal';
@@ -18,6 +21,7 @@ import { CharacterProps } from '../../types';
 
 const Landing: React.FC = () => {
   // State management
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
   const [characters, setCharacters] = useState<CharacterProps[]>([]);
   const [selectedCharacter, setSelectedCharacter] =
     useState<CharacterProps | null>(null);
@@ -32,11 +36,38 @@ const Landing: React.FC = () => {
     planet: null
   });
   const [totalPages, setTotalPages] = useState(0);
+  const [films, setFilms] = useState<{ title: string; id: string }[]>([]);
+  const [species, setSpecies] = useState<{ name: string; id: string }[]>([]);
+  const [planets, setPlanets] = useState<{ name: string; id: string }[]>([]);
+  const [areFiltersApplied, setAreFiltersApplied] = useState(false);
 
   // Load characters when page first renders or currentPage changes
   useEffect(() => {
-    loadCharacters(currentPage);
-  }, [currentPage]);
+    // Fetch initial data only once when the component mounts
+    const loadInitialData = async () => {
+      setIsLoading(true); // Show loading spinner
+      try {
+        loadCharacters(currentPage);
+        const [filmsData, speciesData, planetsData] = await Promise.all([
+          fetchFilms(),
+          fetchSpecies(),
+          fetchPlanets()
+        ]);
+        setFilms(filmsData);
+        setSpecies(speciesData);
+        setPlanets(planetsData);
+      } catch (error) {
+        console.error('Failed to fetch initial data:', error);
+      } finally {
+        setIsLoading(false); // Hide loading spinner
+        setInitialDataLoaded(true); // Indicate that initial data has been loaded
+      }
+    };
+
+    if (!initialDataLoaded) {
+      loadInitialData();
+    }
+  }, [initialDataLoaded]);
 
   // Function to load characters from API
   const loadCharacters = async (page: number = 1) => {
@@ -58,6 +89,7 @@ const Landing: React.FC = () => {
     // Start loading and clear characters
     setIsLoading(true);
     setCharacters([]);
+    setAreFiltersApplied(false);
 
     // Reset the selected filters state
     setSelectedFilters({
@@ -133,6 +165,7 @@ const Landing: React.FC = () => {
       const updatedFilters = { ...selectedFilters, [filterType]: filterValue };
       setSelectedFilters(updatedFilters);
       applyFilters(updatedFilters);
+      setAreFiltersApplied(true); // Indicate that filters are applied
     }
   };
 
@@ -208,40 +241,54 @@ const Landing: React.FC = () => {
 
   return (
     <div className="center-container">
-      {/* Header component for search and filters */}
-      <Header
-        onSearch={handleSearchByName}
-        onFilterChange={handleFilterChange}
-        selectedFilters={selectedFilters}
-      />
-
-      {/* Loader component to indicate loading state */}
-      {isLoading ? (
-        <Loader />
+      {/* Conditional rendering based on initialDataLoaded */}
+      {initialDataLoaded ? (
+        <>
+          {/* Header is now inside the check for initialDataLoaded */}
+          <Header
+            onSearch={handleSearchByName}
+            onFilterChange={handleFilterChange}
+            selectedFilters={selectedFilters}
+            films={films}
+            species={species}
+            planets={planets}
+          />
+          {/* Show Loader when isLoading is true for search or filter actions */}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <div className="card-container">
+                {characters.map((character, index) => (
+                  <Character
+                    key={index}
+                    character={character}
+                    onClick={() => handleCharacterClick(character)}
+                  />
+                ))}
+              </div>
+              {/* Character modal and pagination are only shown when not loading */}
+              {isModalOpen && selectedCharacter && (
+                <CharacterModal
+                  character={selectedCharacter}
+                  closeModal={closeModal}
+                />
+              )}
+              {!areFiltersApplied && (
+                <Pagination
+                  currentPage={currentPage}
+                  hasNextPage={!!nextPage}
+                  hasPrevPage={!!prevPage}
+                  totalPage={totalPages}
+                  goToPage={goToPage}
+                />
+              )}
+            </>
+          )}
+        </>
       ) : (
-        <div className="card-container">
-          {characters.map((character, index) => (
-            <Character
-              key={index}
-              character={character}
-              onClick={() => handleCharacterClick(character)}
-            />
-          ))}
-        </div>
-      )}
-      {/* Character modal component */}
-      {isModalOpen && selectedCharacter && (
-        <CharacterModal character={selectedCharacter} closeModal={closeModal} />
-      )}
-      {/* Pagination component */}
-      {!isLoading && (
-        <Pagination
-          currentPage={currentPage}
-          hasNextPage={!!nextPage}
-          hasPrevPage={!!prevPage}
-          totalPage={totalPages}
-          goToPage={goToPage}
-        />
+        /* Loader shown initially until initialDataLoaded is true */
+        <Loader />
       )}
     </div>
   );

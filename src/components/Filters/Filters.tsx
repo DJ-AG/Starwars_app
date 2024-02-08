@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { fetchFilms, fetchSpecies, fetchPlanets } from '../../services/swapi';
+import React from 'react';
 import './Filters.css';
 
 interface FilterProps {
@@ -9,26 +8,18 @@ interface FilterProps {
     species: string | null;
     planet: string | null;
   };
+  films: { title: string; id: string }[];
+  species: { name: string; id: string }[];
+  planets: { name: string; id: string }[];
 }
 
-const Filter: React.FC<FilterProps> = ({ onFilterChange, selectedFilters }) => {
-  const [films, setFilms] = useState<{ title: string; id: string }[]>([]);
-  const [species, setSpecies] = useState<{ name: string; id: string }[]>([]);
-  const [planets, setPlanets] = useState<{ name: string; id: string }[]>([]);
-
-  // Fetch films, species, and planets data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      const filmsData = await fetchFilms();
-      const speciesData = await fetchSpecies();
-      const planetsData = await fetchPlanets();
-      setFilms(filmsData);
-      setSpecies(speciesData);
-      setPlanets(planetsData);
-    };
-    fetchData();
-  }, []);
-
+const Filter: React.FC<FilterProps> = ({
+  onFilterChange,
+  selectedFilters,
+  films,
+  species,
+  planets
+}) => {
   const handleFilterChange =
     (filterType: string) => (event: React.ChangeEvent<HTMLSelectElement>) => {
       const value = event.target.value;
@@ -44,7 +35,7 @@ const Filter: React.FC<FilterProps> = ({ onFilterChange, selectedFilters }) => {
           onChange={handleFilterChange('film')}
           className="filter-select"
         >
-          <option value="">Filte by Film</option>
+          <option value="">Filter by Film</option>
           {films.map((film) => (
             <option key={film.id} value={film.id}>
               {film.title}

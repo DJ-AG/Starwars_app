@@ -35,29 +35,44 @@ const Login = () => {
   };
 
   return (
-    <div className="login_wrapper">
+    <div className="login-wrapper">
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username</label>
+        <div className="login-logo">
+          <img
+            src="https://download.logo.wine/logo/Star_Wars/Star_Wars-Logo.wine.png"
+            alt="Star Wars Logo"
+          />
+        </div>
+        <h2>Login</h2>
+        <div className="login-input">
           <input
             type="text"
             id="username"
             name="username"
+            placeholder="Username"
             value={credentials.username}
             onChange={handleChange}
           />
         </div>
-        <div className="mt-4 relative">
-          <label htmlFor="password">Password</label>
+        <div className="login-input">
           <input
             type={showPassword ? 'text' : 'password'}
             id="password"
             name="password"
+            placeholder="Password"
             value={credentials.password}
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Log In</button>
+        <span
+          className="password-toggle"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? 'Hide' : 'Show'}
+        </span>
+        <button type="submit" className="login-button">
+          Log In
+        </button>
       </form>
     </div>
   );

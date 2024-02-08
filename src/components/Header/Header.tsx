@@ -11,12 +11,18 @@ interface HeaderProps {
     species: string | null;
     planet: string | null;
   };
+  films: { title: string; id: string }[];
+  species: { name: string; id: string }[];
+  planets: { name: string; id: string }[];
 }
 
 const Header: React.FC<HeaderProps> = ({
   onSearch,
   onFilterChange,
-  selectedFilters
+  selectedFilters,
+  films,
+  species,
+  planets
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const { isAuthenticated, logout } = useAuth();
@@ -51,6 +57,9 @@ const Header: React.FC<HeaderProps> = ({
       <Filter
         onFilterChange={onFilterChange}
         selectedFilters={selectedFilters}
+        films={films}
+        species={species}
+        planets={planets}
       />
       {isAuthenticated && (
         <button className="logout-button" onClick={logout}>
