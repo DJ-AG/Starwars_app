@@ -3,10 +3,7 @@ import './Header.css';
 import Filter from '../Filters/Filters';
 import { useAuth } from '../../context/authContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCircleDown,
-  faCircleArrowUp
-} from '@fortawesome/free-solid-svg-icons';
+import { faCircleDown, faCircleUp } from '@fortawesome/free-solid-svg-icons';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -48,7 +45,6 @@ const Header: React.FC<HeaderProps> = ({
 
   useEffect(() => {
     const handleResize = () => {
-      console.log('Window width:', window.innerWidth); // Log window width
       if (window.innerWidth <= 768) {
         setIsHeaderVisible(true); // Always show header on mobile
       }
@@ -61,8 +57,6 @@ const Header: React.FC<HeaderProps> = ({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  console.log('isAuthenticated:', isAuthenticated); // Log isAuthenticated status
 
   return (
     <header className={`header ${isHeaderVisible ? 'visible' : 'hidden'}`}>
@@ -94,13 +88,13 @@ const Header: React.FC<HeaderProps> = ({
         planets={planets}
       />
       {/* Conditionally render the toggle button */}
-      {isAuthenticated && window.innerWidth <= 768 && (
+      {window.innerWidth <= 768 && (
         <button
           className="toggle-header-button"
           onClick={toggleHeaderVisibility}
         >
           {isHeaderVisible ? (
-            <FontAwesomeIcon icon={faCircleArrowUp} className="arrow" />
+            <FontAwesomeIcon icon={faCircleUp} className="arrow" />
           ) : (
             <FontAwesomeIcon icon={faCircleDown} className="arrow" />
           )}

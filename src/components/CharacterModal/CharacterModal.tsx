@@ -1,5 +1,6 @@
 // CharacterModal.tsx
 import React, { useState, useEffect } from 'react';
+// While testing in jest, the css import statement should be commented out
 import './CharacterModal.css';
 import { UnifiedCharacterType } from '../../types';
 import { fetchCharacterImageByName } from '../../services/swapi'; // Make sure the path is correct
@@ -23,94 +24,147 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
           setImageSrc(imageUrl);
         }
       } catch (error) {
-        // Handle any errors here, possibly set a default image if the API call fails
         console.error(error);
       }
     };
-
     loadImage();
   }, [character.name]);
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = ('0' + date.getDate()).slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  };
+
   return (
     <div className="modal-backdrop" onClick={closeModal}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-container">
-          <img
-            className="character-image"
-            src={imageSrc || 'https://placehold.co/400'}
-            alt={character.name}
-          />
-          <div className="character-info">
-            <button className="close-button" onClick={closeModal}>
+          <div className="image-container">
+            <img
+              className="character-image"
+              src={imageSrc || 'https://placehold.co/400'}
+              alt={character.name}
+            />
+          </div>
+          <div className="character-data">
+            <button
+              className="close-button"
+              onClick={closeModal}
+              data-testid="close-button"
+            >
               X
             </button>
             <h1>{character.name}</h1>
-            {character.affiliations && character.affiliations.length > 0 && (
-              <>
-                <h4>AFFILIATIONS</h4>
-                {character.affiliations.map((affiliation, index) => (
-                  <p key={index}>{affiliation}</p>
-                ))}
-              </>
-            )}
-            {character.apprentices && character.apprentices.length > 0 && (
-              <>
-                <h4>APPRENTICES</h4>
-                {character.apprentices.map((apprentice, index) => (
-                  <p key={index}>{apprentice}</p>
-                ))}
-              </>
-            )}
             {character.homeworldDetails && (
               <>
-                <h4>Homeworld</h4>
-                <ul>
-                  <li>
-                    <span>Name: {character.homeworldDetails.name}</span>
-                  </li>
-                  <li>
-                    <span>Terrain: {character.homeworldDetails.terrain}</span>
-                  </li>
-                  <li>
-                    <span>Climate: {character.homeworldDetails.climate}</span>
-                  </li>
-                  <li>
-                    <span>
-                      Population: {character.homeworldDetails.population}
-                    </span>
-                  </li>
-                </ul>
+                <div className="character-info">
+                  <h4>Homeworld </h4>
+                  <ul>
+                    <li>
+                      <span>
+                        {character.homeworldDetails.name || 'unknown'}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Terrain:{' '}
+                        {character.homeworldDetails.terrain || 'unknown'}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Climate:{' '}
+                        {character.homeworldDetails.climate || 'unknown'}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Population:{' '}
+                        {character.homeworldDetails.population || 'unknown'}
+                      </span>
+                    </li>
+                  </ul>
+                </div>
               </>
             )}
-            <h4>GENDER</h4>
-            <ul>
-              <li>
-                <span>{character.gender}</span>
-              </li>
-            </ul>
-            <h4>DIMENSIONS</h4>
-            <ul>
-              <li>
-                <span>Height: {character.height}m</span>
-              </li>
-            </ul>
+            <div className="character-info">
+              <h4>GENDER</h4>
+              <ul>
+                <li>
+                  <span>{character.gender || 'unknown'}</span>
+                </li>
+              </ul>
+            </div>
+            <div className="character-info">
+              <h4>Height</h4>
+              <ul>
+                <li>
+                  <span>
+                    {character.height ? `${character.height} cm` : 'unknown'}
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div className="character-info">
+              <h4>Mass</h4>
+              <ul>
+                <li>
+                  <span>
+                    {character.mass !== 'unknown'
+                      ? `${character.mass} kg`
+                      : 'unknown'}
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div className="character-info">
+              <h4>Birth year</h4>
+              <ul>
+                <li>
+                  <span>{character.birth_year || 'unknown'}</span>
+                </li>
+              </ul>
+            </div>
             {character.speciesDetails && (
               <>
-                <h4>SPECIES</h4>
-                <ul>
-                  <li>
-                    <span>Name: {character.speciesDetails.name}</span>
-                  </li>
-                  <li>
-                    <span>
-                      Classification: {character.speciesDetails.classification}
-                    </span>
-                  </li>
-                  <li>
-                    <span>Language: {character.speciesDetails.language}</span>
-                  </li>
-                </ul>
+                <div className="character-info">
+                  <h4>SPECIES</h4>
+                  <ul>
+                    <li>
+                      <span>
+                        Name: {character.speciesDetails.name || 'unknown'}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Classification:{' '}
+                        {character.speciesDetails.classification || 'unknown'}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Language:{' '}
+                        {character.speciesDetails.language || 'unknown'}
+                      </span>
+                    </li>
+                  </ul>
+                </div>
               </>
             )}
+            <div className="character-info-print">
+              <p>
+                {`${character.name} appear in ${character.films?.length} movies` ||
+                  'unknown'}
+              </p>
+              <p>
+                This Data Was Created in{' '}
+                {formatDate(character.created) || 'unknown'} <br />
+              </p>
+            </div>
           </div>
         </div>
       </div>

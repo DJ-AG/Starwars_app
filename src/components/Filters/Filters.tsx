@@ -13,7 +13,7 @@ interface FilterProps {
   planets: { name: string; id: string }[];
 }
 
-const Filter: React.FC<FilterProps> = ({
+const Filters: React.FC<FilterProps> = ({
   onFilterChange,
   selectedFilters,
   films,
@@ -84,4 +84,4 @@ const Filter: React.FC<FilterProps> = ({
   );
 };
 
-export default Filter;
+export default Filters;

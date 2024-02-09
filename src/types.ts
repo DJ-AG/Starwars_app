@@ -3,8 +3,10 @@ export interface UnifiedCharacterType {
   name: string;
   image?: string | null;
   url: string;
-  bornLocation?: string;
-  diedLocation?: string;
+  birth_year?: string;
+  mass?: string;
+  created?: string;
+  films?: string[];
   homeworldDetails?: {
     name: string;
     terrain: string;
@@ -17,12 +19,9 @@ export interface UnifiedCharacterType {
     designation: string;
     language: string;
   };
-  affiliations?: string[];
-  apprentices?: string[];
   gender?: string;
   height?: number;
   species?: string;
-  wiki?: string;
   onClick?: (character: UnifiedCharacterType) => void;
 }
 

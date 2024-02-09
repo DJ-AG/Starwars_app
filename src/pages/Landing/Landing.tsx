@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { debounce } from 'lodash';
 import './Landing.css';
 import {
@@ -15,7 +15,6 @@ import {
 import Character from '../../components/Character/Character';
 import CharacterModal from '../../components/CharacterModal/CharacterModal';
 import Header from '../../components/Header/Header';
-import Pagination from '../../components/Pagination/Pagination';
 import Loader from '../../components/Loader/Loader';
 import { UnifiedCharacterType } from '../../types'; // Assuming this import path is correct
 
@@ -59,6 +58,42 @@ const Landing: React.FC = () => {
 
     fetchFiltersData();
   }, []);
+
+  const loadMoreCharacters = useCallback(async () => {
+    if (isLoading || !nextPage || nextPage === 'null') return; // Check if there's a next page
+    setIsLoading(true);
+    try {
+      const data = await fetchCharacters(parseInt(nextPage));
+      setCharacters((prev) => [...prev, ...data.results]);
+      setNextPage(
+        data.next ? new URL(data.next).searchParams.get('page') : null
+      );
+    } catch (error) {
+      console.error('Failed to load more characters:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [nextPage, isLoading]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 200 &&
+        !areFiltersApplied // Check if filters are not applied
+      ) {
+        loadMoreCharacters();
+      }
+    };
+
+    if (!areFiltersApplied) {
+      window.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [loadMoreCharacters, areFiltersApplied]);
 
   useEffect(() => {
     const loadCharactersForCurrentPage = async () => {
@@ -126,7 +161,6 @@ const Landing: React.FC = () => {
   }, 300);
 
   const handleCharacterClick = async (characterProp: UnifiedCharacterType) => {
-    setIsLoading(true);
     try {
       const detailedCharacter = await fetchCharacterDetailsByUrl(
         characterProp.url
@@ -152,7 +186,6 @@ const Landing: React.FC = () => {
             designation: speciesDetails.designation,
             averageHeight: speciesDetails.average_height,
             language: speciesDetails.language
-            // Add other details you want to display
           };
         }
       }
@@ -160,14 +193,11 @@ const Landing: React.FC = () => {
     } catch (error) {
       console.error('Failed to fetch character details:', error);
     } finally {
-      setIsLoading(false);
       setIsModalOpen(true);
     }
   };
 
   const closeModal = () => setIsModalOpen(false);
-
-  const goToPage = (page: number) => setCurrentPage(page);
 
   // Handle filter change
   const handleFilterChange = async (
@@ -261,49 +291,26 @@ const Landing: React.FC = () => {
 
   return (
     <div className="center-container">
-      {initialDataLoaded ? (
-        <>
-          <Header
-            onSearch={handleSearchByName}
-            onFilterChange={handleFilterChange}
-            selectedFilters={selectedFilters}
-            films={films}
-            species={species}
-            planets={planets}
+      <Header
+        onSearch={handleSearchByName}
+        onFilterChange={handleFilterChange}
+        selectedFilters={selectedFilters}
+        films={films}
+        species={species}
+        planets={planets}
+      />
+      {isLoading && <Loader />}
+      <div className="card-container">
+        {characters.map((character, index) => (
+          <Character
+            key={index}
+            character={character}
+            onClick={() => handleCharacterClick(character)}
           />
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <>
-              <div className="card-container">
-                {characters.map((character, index) => (
-                  <Character
-                    key={index}
-                    character={character}
-                    onClick={() => handleCharacterClick(character)}
-                  />
-                ))}
-              </div>
-              {isModalOpen && selectedCharacter && (
-                <CharacterModal
-                  character={selectedCharacter}
-                  closeModal={closeModal}
-                />
-              )}
-              {!areFiltersApplied && (
-                <Pagination
-                  currentPage={currentPage}
-                  hasNextPage={!!nextPage}
-                  hasPrevPage={!!prevPage}
-                  totalPage={totalPages}
-                  goToPage={goToPage}
-                />
-              )}
-            </>
-          )}
-        </>
-      ) : (
-        <Loader />
+        ))}
+      </div>
+      {isModalOpen && selectedCharacter && (
+        <CharacterModal character={selectedCharacter} closeModal={closeModal} />
       )}
     </div>
   );

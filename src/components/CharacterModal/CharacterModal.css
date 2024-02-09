@@ -1,72 +1,83 @@
 .modal-container {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  border-radius: 6px;
-} 
+  flex-direction: row;
+  align-items: stretch; /* Align children to fill the container equally */
+  width: 900px; /* Fixed modal width */
+  height: 630px; /* Fixed modal height */
+  margin: auto; /* Center the modal on the screen */
+  font-weight: 100;
+}
+
+
+
 
 .modal-content {
-  background-color: white;
-  border-radius: 8px;
-  position: relative;
-  box-shadow: .3px .3px 1px 1px #9e4f60;
- 
+  display: flex;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden; 
+  position: relative; 
+}
+
+.modal-container > .character-data > h1 {
+  background-image: url("https://static-mh.content.disney.io/starwars/assets/shared/bg_hash@2x-bd5b31294ea9.png");
+  color: white;
+  text-align: left;
+  margin-top: -15px;
 }
   
-  .character-image{
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-    width: 20vw; 
-    height: 55vh;
-    object-fit: cover; 
-    object-position: center;
-    border-right: 4px solid #9e4f60;
-    background-color: #282727;
-  }
+.character-image {
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  background-color: #282727; 
+
+}
+
   
+  
+.character-data {
+  position: relative;
+  width: 50%; 
+  height: 100%; 
+  overflow-y: auto; 
+  background-color: #282727; 
+  padding: 20px;
+  box-sizing: border-box; 
+  color: white;
+  text-transform:uppercase ;
+  border-left: 4px solid #9e4f60;
+}
+  
+  .character-data > .character-info > h4 {
+  text-align: left;
+  margin-top: -10px;
+  color: #9e4f60;
+  font-size: 1.2rem;
+  }
+
   .character-info {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-    width: 30vw;
-    padding: 20px;
-    background-image: url("https://static-mh.content.disney.io/starwars/assets/shared/bg_hash@2x-bd5b31294ea9.png");
-    background-size: 7px;
-    background-repeat: repeat-x;
-    background-position: top left;
-    background-color: #282727;
-    
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-size: 1rem;
   }
-  
-  .character-info > h1, .character-info > h4, .character-info > p, .character-info > a, .character-info > span {
-    color: #ddd;
-    margin-bottom: 10px;
+
+  .character-info > ul {
+    margin-top: -15px;
   }
-  .character-info > h1, .character-info > h4, .character-info > p, .character-info > a, .character-info > span, .character-info > ul > li {
-    color: #ddd;
-    margin-bottom: 10px;
-    list-style: none;
+
+  .character-info > ul > li {
+   list-style-type: none;
   }
-  
-  .character-info > p, .character-info > a {
-    color: #9e4f60;
-    transition: color 125ms;
-    text-transform: capitalize;
-    text-decoration: none;
+
+  .character-info > h4, ul {
+    flex-basis: 100%;
+    text-align: start;
+
   }
-  
-  .character-info > p:hover, .character-info > a:hover {
-    color: rgb(183, 104, 121);
-    cursor: pointer;
-  }
-  
-  .character-info > span {
-    color: #aaa;
-    text-transform: capitalize;
-  }
-  .character-info > ul > li > span {
-    color: #aaa;
-    text-transform: capitalize;
-  }
+
 
   .modal-backdrop {
     position: fixed;
@@ -81,28 +92,59 @@
     z-index: 1000; 
   }
   
+
   .close-button {
     position: absolute;
     top: 10px;
     right: 10px;
-    
+    z-index: 10;
+    padding: 0.5rem 1rem;
+    border: 2px solid #9e4f60;
+    background-color: transparent;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    margin-left: 1rem;
   }
 
- @media only screen and (max-width: 768px) {
-
-  .modal-container  {
-    width: 70vw;
+  .close-button:hover {
+    background-color: #9e4f60;
+    color: #282727;
   }
 
-  .character-info {
-    width: 100%;
-  }
+  @media only screen and (max-width: 768px) {
+    .character-image {
+      display: none;
+    }
+  
+    .modal-content {
+      width: 100%;
+      height: auto;
+      margin:10px auto;
+    }
+  
+    .character-data {
+      width: 100%;
+      padding: 20px;
+      margin-left: 10px;
+      margin-right: 10px;
+      border-left: none;
+      border: 4px solid #9e4f60;
 
-  .character-info > h4 {
-    margin-bottom: 0px;
+    }
+  
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+    }
+  
+    .modal-container {
+      width: 100%;
+      height: 680px; /* Fixed modal height */
+    }
   }
-
-  .modal-container > img {
-    display: none;
-  }
-}
