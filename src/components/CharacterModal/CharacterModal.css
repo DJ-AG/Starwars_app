@@ -115,8 +115,13 @@
     color: #282727;
   }
 
+  .character-info-print{
+    margin-top: 2rem;
+    color: white;
+  }
+
   @media only screen and (max-width: 768px) {
-    .image-container {
+    .character-image {
       display: none;
     }
   

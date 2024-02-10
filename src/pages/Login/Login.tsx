@@ -8,7 +8,6 @@ const Login = () => {
     username: '',
     password: ''
   });
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -35,16 +34,17 @@ const Login = () => {
   };
 
   return (
-    <div className="login-wrapper">
-      <form onSubmit={handleSubmit}>
-        <div className="login-logo">
+    <div className="container">
+      <div className="form-container">
+        <div className="logo">
           <img
             src="https://download.logo.wine/logo/Star_Wars/Star_Wars-Logo.wine.png"
             alt="Star Wars Logo"
           />
         </div>
-        <h2>Login</h2>
-        <div className="login-input">
+        <h1>LOGIN</h1>
+        <form onSubmit={handleSubmit}>
+          <label>username</label>
           <input
             type="text"
             id="username"
@@ -53,27 +53,23 @@ const Login = () => {
             value={credentials.username}
             onChange={handleChange}
           />
-        </div>
-        <div className="login-input">
+          <label>Password</label>
           <input
-            type={showPassword ? 'text' : 'password'}
             id="password"
             name="password"
             placeholder="Password"
             value={credentials.password}
             onChange={handleChange}
           />
-        </div>
-        <span
-          className="password-toggle"
-          onClick={() => setShowPassword(!showPassword)}
-        >
-          {showPassword ? 'Hide' : 'Show'}
-        </span>
-        <button type="submit" className="login-button">
-          Log In
-        </button>
-      </form>
+          <button type="submit" className="login-button">
+            Login
+          </button>
+        </form>
+        <p>
+          Don't have an account? No worries! You can log in with any credentials
+          – enjoy exploring!
+        </p>
+      </div>
     </div>
   );
 };

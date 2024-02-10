@@ -49,6 +49,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
         <div className="modal-container">
           <div className="image-container">
             <img
+              className="character-image"
               src={imageSrc}
               alt={character.name}
               onError={handleImageError}
