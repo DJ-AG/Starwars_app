@@ -17,6 +17,7 @@ import CharacterModal from '../../components/CharacterModal/CharacterModal';
 import Header from '../../components/Header/Header';
 import Loader from '../../components/Loader/Loader';
 import { UnifiedCharacterType } from '../../types'; // Assuming this import path is correct
+import SkeletonCard from '../../components/Loader/SkeletonCard';
 
 const Landing: React.FC = () => {
   const [initialDataLoaded, setInitialDataLoaded] = useState(false);
@@ -24,40 +25,54 @@ const Landing: React.FC = () => {
   const [selectedCharacter, setSelectedCharacter] =
     useState<UnifiedCharacterType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedFilters, setSelectedFilters] = useState({
     film: null,
     species: null,
     planet: null
   });
-  const [totalPages, setTotalPages] = useState(0);
   const [nextPage, setNextPage] = useState<string | null>(null);
-  const [prevPage, setPrevPage] = useState<string | null>(null);
   const [films, setFilms] = useState<{ title: string; id: string }[]>([]);
   const [species, setSpecies] = useState<{ name: string; id: string }[]>([]);
   const [planets, setPlanets] = useState<{ name: string; id: string }[]>([]);
   const [areFiltersApplied, setAreFiltersApplied] = useState(false);
+  const currentPage = 1;
 
   useEffect(() => {
-    const fetchFiltersData = async () => {
+    // This function fetches initial data required for the component
+    const fetchInitialData = async () => {
       try {
+        // Set loading to true only if the characters and other data haven't been loaded yet
+        if (!initialDataLoaded) setIsLoading(true);
+
         const [filmsData, speciesData, planetsData] = await Promise.all([
           fetchFilms(),
           fetchSpecies(),
           fetchPlanets()
         ]);
+
+        // Fetch initial characters separately to control flow better
+        const initialCharacters = await fetchCharacters(1); // Assuming page starts at 1
+
         setFilms(filmsData);
         setSpecies(speciesData);
         setPlanets(planetsData);
-        setInitialDataLoaded(true);
+        setCharacters(initialCharacters.results);
+        updatePagination(initialCharacters.next);
+
+        setInitialDataLoaded(true); // Marks that the initial fetch is complete
       } catch (error) {
-        console.error('Failed to fetch filter data:', error);
+        console.error('Error fetching initial data:', error);
+      } finally {
+        setIsLoading(false); // Ensures loader is hidden after initial data is fetched
       }
     };
 
-    fetchFiltersData();
-  }, []);
+    if (!initialDataLoaded) {
+      fetchInitialData();
+    }
+    // The dependency array is crucial here; ensure it triggers only the intended effects.
+  }, [initialDataLoaded]);
 
   const loadMoreCharacters = useCallback(async () => {
     if (isLoading || !nextPage || nextPage === 'null') return; // Check if there's a next page
@@ -100,9 +115,8 @@ const Landing: React.FC = () => {
       setIsLoading(true);
       try {
         const data = await fetchCharacters(currentPage);
-        setCharacters(data.results); // Assuming fetchCharacters now correctly maps to UnifiedCharacterType
-        updatePagination(data.next, data.previous);
-        setTotalPages(Math.ceil(data.count / 10));
+        setCharacters(data.results);
+        updatePagination(data.next);
       } catch (error) {
         console.error('Failed to fetch characters:', error);
       } finally {
@@ -120,8 +134,7 @@ const Landing: React.FC = () => {
     try {
       const data = await fetchCharacters(page);
       setCharacters(data.results);
-      updatePagination(data.next, data.previous);
-      setTotalPages(Math.ceil(data.count / 10));
+      updatePagination(data.next);
     } catch (error) {
       console.error('Failed to fetch characters:', error);
     } finally {
@@ -141,9 +154,8 @@ const Landing: React.FC = () => {
     await loadCharacters();
   };
 
-  const updatePagination = (next: string | null, previous: string | null) => {
+  const updatePagination = (next: string | null) => {
     setNextPage(next ? new URL(next).searchParams.get('page') : null);
-    setPrevPage(previous ? new URL(previous).searchParams.get('page') : null);
   };
 
   const handleSearchByName = debounce(async (query: string) => {
@@ -151,8 +163,6 @@ const Landing: React.FC = () => {
     try {
       const data = await fetchCharacterByName(query);
       setCharacters(data.results);
-      setTotalPages(Math.ceil(data.count / 10));
-      resetPagination();
     } catch (error) {
       console.error('Failed to search characters:', error);
     } finally {
@@ -284,33 +294,43 @@ const Landing: React.FC = () => {
     }
   };
 
-  const resetPagination = () => {
-    setNextPage(null);
-    setPrevPage(null);
-  };
-
   return (
     <div className="center-container">
-      <Header
-        onSearch={handleSearchByName}
-        onFilterChange={handleFilterChange}
-        selectedFilters={selectedFilters}
-        films={films}
-        species={species}
-        planets={planets}
-      />
-      {isLoading && <Loader />}
-      <div className="card-container">
-        {characters.map((character, index) => (
-          <Character
-            key={index}
-            character={character}
-            onClick={() => handleCharacterClick(character)}
+      {isLoading && !initialDataLoaded ? ( // Checks both isLoading and if initial data hasn't been loaded
+        <Loader />
+      ) : (
+        <>
+          <Header
+            onSearch={handleSearchByName}
+            onFilterChange={handleFilterChange}
+            selectedFilters={selectedFilters}
+            films={films}
+            species={species}
+            planets={planets}
           />
-        ))}
-      </div>
-      {isModalOpen && selectedCharacter && (
-        <CharacterModal character={selectedCharacter} closeModal={closeModal} />
+          <div className="card-container">
+            {characters.map((character, index) => (
+              <Character
+                key={index}
+                character={character}
+                onClick={() => handleCharacterClick(character)}
+              />
+            ))}
+            {isLoading && (
+              <>
+                {Array.from({ length: 9 }, (_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
+              </>
+            )}
+          </div>
+          {isModalOpen && selectedCharacter && (
+            <CharacterModal
+              character={selectedCharacter}
+              closeModal={closeModal}
+            />
+          )}
+        </>
       )}
     </div>
   );

@@ -5,7 +5,6 @@ const BASE_URL = 'https://swapi.dev/api/';
 export const fetchCharacters = async (page: number) => {
   try {
     const response = await axios.get(`${BASE_URL}/people/?page=${page}`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     throw error;
@@ -59,7 +58,6 @@ export const fetchCharacterDetailsByUrl = async (characterUrl: string) => {
 export const fetchSpecies = async () => {
   try {
     const response = await axios.get(`${BASE_URL}species/`);
-    console.log('Species', response.data.results);
     return response.data.results.map((species: any) => ({
       name: species.name,
       id: species.url.match(/\/species\/(\d+)\//)[1]
@@ -73,7 +71,6 @@ export const fetchSpecies = async () => {
 export const fetchPlanets = async () => {
   try {
     const response = await axios.get(`${BASE_URL}planets/`);
-    console.log('Planets', response.data.results);
     return response.data.results.map((planet: any) => ({
       name: planet.name,
       id: planet.url.match(/\/planets\/(\d+)\//)[1]
@@ -87,7 +84,6 @@ export const fetchPlanets = async () => {
 export const fetchSpeciesDetails = async (speciesId: string) => {
   try {
     const response = await axios.get(`${BASE_URL}species/${speciesId}/`);
-    console.log('Species Details', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching species details:', error);
@@ -98,7 +94,6 @@ export const fetchSpeciesDetails = async (speciesId: string) => {
 export const fetchPlanetDetails = async (planetId: string) => {
   try {
     const response = await axios.get(`${BASE_URL}planets/${planetId}/`);
-    console.log('Planet Details', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching planet details:', error);
@@ -117,9 +112,9 @@ export const fetchCharacterImageByName = async (name: string) => {
       (char: any) => char.name === name
     );
     // Return the image URL if the character is found, otherwise return null
-    return character ? character.image : null;
+    return character ? character.image : 'https://placehold.co/600x400?text=:(';
   } catch (error) {
     console.error('Error fetching character image by name:', error);
-    throw error;
+    return 'https://placehold.co/600x400?text=:(';
   }
 };

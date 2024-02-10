@@ -16,7 +16,13 @@
   padding-bottom: 20px;
 }
 
-/* Responsive gap for smaller screens, if needed */
+.loader-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
 @media (max-width: 768px) {
   .card-container {
     display: flex;

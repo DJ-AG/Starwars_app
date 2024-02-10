@@ -20,15 +20,19 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     const loadImage = async () => {
       try {
         const imageUrl = await fetchCharacterImageByName(character.name);
-        if (imageUrl) {
-          setImageSrc(imageUrl);
-        }
+        setImageSrc(imageUrl || 'https://placehold.co/600x400?text=:('); // Set fallback URL here
       } catch (error) {
-        console.error(error);
+        setImageSrc('https://placehold.co/600x400?text=:('); // Fallback for any other error
+        console.error('Error fetching character image:', error);
       }
     };
+
     loadImage();
   }, [character.name]);
+
+  const handleImageError = () => {
+    setImageSrc('https://placehold.co/600x400?text=:(');
+  };
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -45,9 +49,9 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
         <div className="modal-container">
           <div className="image-container">
             <img
-              className="character-image"
-              src={imageSrc || 'https://placehold.co/400'}
+              src={imageSrc}
               alt={character.name}
+              onError={handleImageError}
             />
           </div>
           <div className="character-data">

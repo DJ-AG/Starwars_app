@@ -18,10 +18,9 @@ const Character: React.FC<CharacterProps> = React.memo(
       const loadImage = async () => {
         try {
           const imageUrl = await fetchCharacterImageByName(character.name);
-          if (imageUrl) {
-            setImageSrc(imageUrl);
-          }
+          setImageSrc(imageUrl || 'https://placehold.co/600x400?text=:('); // Set fallback URL here
         } catch (error) {
+          setImageSrc('https://placehold.co/600x400?text=:('); // Fallback for any other error
           console.error('Error fetching character image:', error);
         }
       };
@@ -29,9 +28,13 @@ const Character: React.FC<CharacterProps> = React.memo(
       loadImage();
     }, [character.name]);
 
+    const handleImageError = () => {
+      setImageSrc('https://placehold.co/600x400?text=:(');
+    };
+
     return (
       <div className="CharacterContainer" onClick={() => onClick(character)}>
-        <img src={imageSrc} alt={character.name} />
+        <img src={imageSrc} alt={character.name} onError={handleImageError} />
         <h1>{character.name}</h1>
         <div className="Decal"></div>
       </div>
