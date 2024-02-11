@@ -1,30 +1,34 @@
-# React + TypeScript + Vite
+# SWcharacter-app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**SWcharacter-app** is a UI frontend application where users can retrieve information about Star Wars characters and their backgrounds from the SWAPI API. However, due to data inconsistencies in the SWAPI API, many details are missing, including images. To address this issue, another API, [https://akabab.github.io/starwars-api/api](https://akabab.github.io/starwars-api/api), is used to fetch images based on the character names provided by the SWAPI API.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Authentication**: Upon visiting the website, users are greeted by a login screen. Although authentication is not required by the SWAPI API, it has been implemented for visual appeal. Users can use any username and password combination to log in, and a mock JWT token is generated.
+- **Search and Filter**: Users can search through the SWAPI API for their favorite Star Wars characters. Additionally, they can filter characters by movie, species, or homeworld. However, due to missing data in the SWAPI API, some filtered searches may yield unexpected results.
 
-## Expanding the ESLint configuration
+## Running the App
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+To run this app, ensure you have the following dependencies installed:
 
-- Configure the top-level `parserOptions` property like this:
+```bash
+npm install
+Then, you can use the following scripts:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+Development: Run npm run dev to start the development server.
+
+Building: Use npm run build to build the project.
+
+Linting: Run npm run lint to lint the code.
+
+Testing: Use npm test to run tests.
+
+Dependencies
+Here are the key dependencies used in this project:
+
+React: JavaScript library for building user interfaces.
+React Router DOM: Routing library for React applications.
+Axios: Promise-based HTTP client for making requests.
+FontAwesome: Icon library for React applications.
+For more details, refer to the package.json file.
 ```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
