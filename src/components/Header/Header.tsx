@@ -19,6 +19,7 @@ interface HeaderProps {
   planets: { name: string; id: string }[];
 }
 
+// Define the Header component
 const Header: React.FC<HeaderProps> = ({
   onSearch,
   onFilterChange,
@@ -28,21 +29,26 @@ const Header: React.FC<HeaderProps> = ({
   planets,
   searchTerm
 }) => {
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true); // Track header visibility
+  // State to track header visibility
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const { isAuthenticated, logout } = useAuth();
 
+  // Function to handle search input change
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onSearch(event.target.value);
   };
 
+  // Function to handle filter change
   const handleFilterChange = (filterType: string, id: string | null) => {
     onFilterChange(filterType, id);
   };
 
+  // Function to toggle header visibility
   const toggleHeaderVisibility = () => {
     setIsHeaderVisible((prev) => !prev);
   };
 
+  // Effect to handle resizing and always show header on mobile
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) {
@@ -58,6 +64,7 @@ const Header: React.FC<HeaderProps> = ({
     };
   }, []);
 
+  // Render the Header component
   return (
     <header className={`header ${isHeaderVisible ? 'visible' : 'hidden'}`}>
       <div className="header-content">
@@ -80,6 +87,7 @@ const Header: React.FC<HeaderProps> = ({
           />
         </div>
       </div>
+      {/* Render the Filter component */}
       <Filter
         onFilterChange={handleFilterChange}
         selectedFilters={selectedFilters}
@@ -100,6 +108,7 @@ const Header: React.FC<HeaderProps> = ({
           )}
         </button>
       )}
+      {/* Render the logout button if authenticated */}
       {isAuthenticated && (
         <button className="logout-button" onClick={logout}>
           Logout
@@ -109,4 +118,5 @@ const Header: React.FC<HeaderProps> = ({
   );
 };
 
+// Export the Header component as default
 export default Header;

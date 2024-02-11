@@ -13,6 +13,7 @@ interface FilterProps {
   planets: { name: string; id: string }[];
 }
 
+// Define the Filters component
 const Filters: React.FC<FilterProps> = ({
   onFilterChange,
   selectedFilters,
@@ -20,14 +21,14 @@ const Filters: React.FC<FilterProps> = ({
   species,
   planets
 }) => {
+  // Function to handle filter change
   const handleFilterChange =
     (filterType: string) => (event: React.ChangeEvent<HTMLSelectElement>) => {
       const value = event.target.value;
       onFilterChange(filterType, value !== '' ? value : null);
     };
 
-  console.log(selectedFilters, films, species, planets);
-
+  // Render the Filters component
   return (
     <div className="filter-container">
       {/* Film Filter */}
@@ -86,4 +87,5 @@ const Filters: React.FC<FilterProps> = ({
   );
 };
 
+// Export the Filters component as default
 export default Filters;

@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+// Base URL for the Star Wars API
 const BASE_URL = 'https://swapi.dev/api/';
 
+// Function to fetch characters from the API
 export const fetchCharacters = async (page: number) => {
   try {
     const response = await axios.get(`${BASE_URL}/people/?page=${page}`);
@@ -11,6 +13,7 @@ export const fetchCharacters = async (page: number) => {
   }
 };
 
+// Function to fetch a character by name from the API
 export const fetchCharacterByName = async (searchTerm: string) => {
   try {
     const response = await axios.get(
@@ -22,6 +25,7 @@ export const fetchCharacterByName = async (searchTerm: string) => {
   }
 };
 
+// Function to fetch films from the API
 export const fetchFilms = async () => {
   try {
     const response = await axios.get(`${BASE_URL}films/`);
@@ -35,6 +39,7 @@ export const fetchFilms = async () => {
   }
 };
 
+// Function to fetch details of a film by its ID from the API
 export const fetchFilmDetails = async (filmId: string) => {
   try {
     const response = await axios.get(`${BASE_URL}films/${filmId}/`);
@@ -45,6 +50,7 @@ export const fetchFilmDetails = async (filmId: string) => {
   }
 };
 
+// Function to fetch details of a character by its URL from the API
 export const fetchCharacterDetailsByUrl = async (characterUrl: string) => {
   try {
     const response = await axios.get(characterUrl);
@@ -55,6 +61,7 @@ export const fetchCharacterDetailsByUrl = async (characterUrl: string) => {
   }
 };
 
+// Function to fetch species from the API
 export const fetchSpecies = async () => {
   try {
     const response = await axios.get(`${BASE_URL}species/`);
@@ -68,6 +75,7 @@ export const fetchSpecies = async () => {
   }
 };
 
+// Function to fetch planets from the API
 export const fetchPlanets = async () => {
   try {
     const response = await axios.get(`${BASE_URL}planets/`);
@@ -81,6 +89,7 @@ export const fetchPlanets = async () => {
   }
 };
 
+// Function to fetch details of a species by its ID from the API
 export const fetchSpeciesDetails = async (speciesId: string) => {
   try {
     const response = await axios.get(`${BASE_URL}species/${speciesId}/`);
@@ -91,6 +100,7 @@ export const fetchSpeciesDetails = async (speciesId: string) => {
   }
 };
 
+// Function to fetch details of a planet by its ID from the API
 export const fetchPlanetDetails = async (planetId: string) => {
   try {
     const response = await axios.get(`${BASE_URL}planets/${planetId}/`);
@@ -101,9 +111,10 @@ export const fetchPlanetDetails = async (planetId: string) => {
   }
 };
 
+// Function to fetch a character's image by name from a different API
 export const fetchCharacterImageByName = async (name: string) => {
   try {
-    // Use the base URL for the new API
+    // Base URL for the new API
     const baseURL = 'https://akabab.github.io/starwars-api/api';
     // Fetch all characters
     const allCharactersResponse = await axios.get(`${baseURL}/all.json`);
@@ -111,10 +122,11 @@ export const fetchCharacterImageByName = async (name: string) => {
     const character = allCharactersResponse.data.find(
       (char: any) => char.name === name
     );
-    // Return the image URL if the character is found, otherwise return null
+    // Return the image URL if the character is found, otherwise return a placeholder
     return character;
   } catch (error) {
     console.error('Error fetching character image by name:', error);
+    // Return a placeholder URL if there's an error
     return 'https://placehold.co/600x400?text=:(';
   }
 };

@@ -8,28 +8,31 @@ interface CharacterModalProps {
   closeModal: () => void;
 }
 
+// Define the CharacterModal component
 const CharacterModal: React.FC<CharacterModalProps> = ({
   character,
   closeModal
 }) => {
-  console.log('character Data from props', character);
+  // State variables for image source and visibility of homeworld details
   const [imageSrc, setImageSrc] = useState<string>('https://placehold.co/400');
   const [showHomeworldDetails, setShowHomeworldDetails] =
     useState<boolean>(false);
 
+  // Effect to load character image
   useEffect(() => {
     const loadImage = async () => {
       try {
+        // Fetch character image details and set image source
         const characterDetails = await fetchCharacterImageByName(
           character.name
         );
-        console.log('characterDetails', characterDetails);
         if (characterDetails && characterDetails.image) {
           setImageSrc(characterDetails.image);
         } else {
           setImageSrc('https://placehold.co/600x400?text=:(');
         }
       } catch (error) {
+        // Handle error by setting placeholder image source
         setImageSrc('https://placehold.co/600x400?text=:(');
         console.error('Error fetching character image:', error);
       }
@@ -38,14 +41,17 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     loadImage();
   }, [character.name]);
 
+  // Function to handle image loading error
   const handleImageError = () => {
     setImageSrc('https://placehold.co/600x400?text=:(');
   };
 
+  // Function to toggle visibility of homeworld details
   const toggleHomeworldDetails = () => {
     setShowHomeworldDetails(!showHomeworldDetails);
   };
 
+  // Function to format date string
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -55,6 +61,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
     return `${day}.${month}.${year}`;
   };
 
+  // Render the CharacterModal component
   return (
     <div
       className="modal-backdrop"
@@ -80,6 +87,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
               X
             </button>
             <h1>{character.name}</h1>
+            {/* Homeworld details */}
             <div className="character-info">
               <div className="homeworld-info">
                 <h4>Homeworld</h4>
@@ -91,6 +99,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 </button>
               </div>
             </div>
+            {/* Display homeworld details if visible */}
             {showHomeworldDetails && character.homeworldDetails && (
               <div className="character-info">
                 <ul>
@@ -118,6 +127,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 </ul>
               </div>
             )}
+            {/* Other character details */}
             <div className="character-info">
               <h4>GENDER</h4>
               <ul>
@@ -126,6 +136,8 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 </li>
               </ul>
             </div>
+            {/* Render height, mass, birth year, and species details */}
+            {/* Some parts are optional and might be unknown */}
             <div className="character-info">
               <h4>Height</h4>
               <ul>
@@ -156,6 +168,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 </li>
               </ul>
             </div>
+            {/* Render species details if available */}
             {character.speciesDetails && (
               <div className="character-info">
                 <h4>SPECIES</h4>
@@ -179,6 +192,7 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
                 </ul>
               </div>
             )}
+            {/* Additional character information */}
             <div className="character-info-print">
               <p>
                 {`${character.name} appear in ${character.films?.length} movies` ||
@@ -196,4 +210,5 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   );
 };
 
+// Export the CharacterModal component as default
 export default CharacterModal;

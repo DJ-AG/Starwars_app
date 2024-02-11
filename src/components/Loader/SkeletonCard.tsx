@@ -1,6 +1,8 @@
 import './SkeletonCard.css';
 
+// Define the SkeletonCard component
 const SkeletonCard = () => {
+  // Render skeleton layout
   return (
     <div className="skeleton-card">
       <div className="skeleton-image"></div>
@@ -10,4 +12,5 @@ const SkeletonCard = () => {
   );
 };
 
+// Export the SkeletonCard component as default
 export default SkeletonCard;
