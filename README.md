@@ -2,6 +2,9 @@
 
 **SWcharacter-app** is a UI frontend application where users can retrieve information about Star Wars characters and their backgrounds from the SWAPI API. However, due to data inconsistencies in the SWAPI API, many details are missing, including images. To address this issue, another API, [https://akabab.github.io/starwars-api/api](https://akabab.github.io/starwars-api/api), is used to fetch images based on the character names provided by the SWAPI API.
 
+## Project Link
+Access the project on Netlify: https://swcharacter-app.netlify.app/characters
+
 ## Features
 
 - **Authentication**: Upon visiting the website, users are greeted by a login screen. Although authentication is not required by the SWAPI API, it has been implemented for visual appeal. Users can use any username and password combination to log in, and a mock JWT token is generated.
@@ -23,8 +26,6 @@ Linting: Run npm run lint to lint the code.
 
 Testing: Use npm test to run tests.
 
-Project Link
-Access the project on Netlify: https://swcharacter-app.netlify.app/characters
 
 Dependencies
 Here are the key dependencies used in this project:
