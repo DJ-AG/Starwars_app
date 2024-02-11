@@ -1,10 +1,10 @@
 .modal-container {
   display: flex;
   flex-direction: row;
-  align-items: stretch; /* Align children to fill the container equally */
-  width: 900px; /* Fixed modal width */
-  height: 630px; /* Fixed modal height */
-  margin: auto; /* Center the modal on the screen */
+  align-items: stretch; 
+  width: 900px; 
+  height: 630px; 
+  margin: auto; 
   font-weight: 100;
 }
 
@@ -25,6 +25,7 @@
   color: white;
   text-align: left;
   margin-top: -15px;
+  font-size:1.5rem;
 }
   
 .character-image {
@@ -57,6 +58,15 @@
   font-size: 1.2rem;
   }
 
+  .character-data > .character-info > .homeworld-info > h4 {
+    text-align: left;
+    margin-top: -10px;
+    color: #9e4f60;
+    font-size: 1.2rem;
+    }
+
+
+
   .character-info {
     display: flex;
     flex-direction: column;
@@ -78,6 +88,30 @@
 
   }
 
+  .character-info > .homeworld-info {
+    display: flex;
+  }
+  
+.homeworld-button{
+  display: flex;
+  border: 2px solid #9e4f60;
+  background-color: transparent;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin-left: 1rem;
+  margin-bottom: 30px;
+  margin-top: -8px;
+  font-size: 0.8rem;
+}
+
+.homeworld-button:hover {
+  background-color: #9e4f60;
+  color: #282727;
+}
 
   .modal-backdrop {
     position: fixed;
@@ -150,6 +184,6 @@
   
     .modal-container {
       width: 100%;
-      height: 680px; /* Fixed modal height */
+      height: 680px; 
     }
   }

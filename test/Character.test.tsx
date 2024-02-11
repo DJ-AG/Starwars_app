@@ -1,50 +1,71 @@
-// make sure to go to CharacterModal.tsx and comment out the css import statement before running the test
-
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import CharacterModal from '../src/components/CharacterModal/CharacterModal';
+import Character from '../src/components/Character/Character';
+import * as swapiService from '../src/services/swapi';
 import { UnifiedCharacterType } from '../src/types';
 
-describe('CharacterModal', () => {
-  it('displays character details correctly', () => {
-    const character: UnifiedCharacterType = {
-      id: '1',
-      name: 'Luke Skywalker',
-      image: 'luke-skywalker.jpg',
-      url: 'https://example.com/characters/1',
-      mass: '77'
-    };
+jest.mock('../src/services/swapi', () => ({
+  fetchCharacterImageByName: jest.fn(),
+  fetchSpeciesDetails: jest.fn()
+}));
 
-    render(<CharacterModal character={character} closeModal={() => {}} />);
+describe('<Character />', () => {
+  const sampleCharacter: UnifiedCharacterType = {
+    id: '1',
+    name: 'Luke Skywalker',
+    species: 'http://example.com/species/1',
+    films: [],
+    gender: 'male',
+    birth_year: '19BBY',
+    height: 172,
+    mass: '77',
+    url: 'http://example.com/planets/1'
+    // Add other fields as necessary
+  };
 
-    // Check if character name is displayed
-    expect(screen.getByText('Luke Skywalker')).toBeInTheDocument();
-
-    // Check if affiliations are displayed
-    expect(screen.getByText('Rebel Alliance')).toBeInTheDocument();
-    expect(screen.getByText('Jedi Order')).toBeInTheDocument();
+  beforeEach(() => {
+    (swapiService.fetchCharacterImageByName as jest.Mock).mockResolvedValue({
+      image: 'http://example.com/luke-image.jpg',
+      species: 'Human'
+    });
+    (swapiService.fetchSpeciesDetails as jest.Mock).mockResolvedValue({
+      name: 'Human'
+    });
   });
 
-  it('closes the modal when close button is clicked', () => {
-    // Mock close modal function
-    const closeModalMock = jest.fn();
+  it('renders character details and fetches image', async () => {
+    render(<Character character={sampleCharacter} onClick={jest.fn()} />);
 
-    const character = {
-      id: '1',
-      name: 'Luke Skywalker',
-      image: 'luke-skywalker.jpg',
-      url: 'https://example.com/characters/1',
-      affiliations: ['Rebel Alliance', 'Jedi Order']
-    };
+    // Use waitFor for asynchronous updates
+    await waitFor(() => {
+      const image = screen.getByAltText('Luke Skywalker') as HTMLImageElement;
+      expect(image.src).toContain('luke-image.jpg');
+    });
 
-    render(
-      <CharacterModal character={character} closeModal={closeModalMock} />
+    expect(screen.getByText('Luke Skywalker')).toBeInTheDocument();
+  });
+
+  it('handles image error by setting a placeholder image', async () => {
+    (swapiService.fetchCharacterImageByName as jest.Mock).mockResolvedValueOnce(
+      {
+        image: null // Simulate failure to fetch image
+      }
     );
 
-    // Click on the close button
-    fireEvent.click(screen.getByTestId('close-button'));
+    render(<Character character={sampleCharacter} onClick={jest.fn()} />);
 
-    // Check if the close modal function was called
-    expect(closeModalMock).toHaveBeenCalled();
+    // Use waitFor for asynchronous updates
+    await waitFor(() => {
+      const image = screen.getByAltText('Luke Skywalker') as HTMLImageElement;
+      expect(image.src).toContain('placehold.co/600x400?text=:(');
+    });
+  });
+
+  it('calls onClick prop when character container is clicked', () => {
+    const handleClick = jest.fn();
+    render(<Character character={sampleCharacter} onClick={handleClick} />);
+
+    fireEvent.click(screen.getByText('Luke Skywalker'));
+    expect(handleClick).toHaveBeenCalledWith(sampleCharacter);
   });
 });

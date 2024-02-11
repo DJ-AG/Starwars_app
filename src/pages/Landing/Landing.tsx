@@ -1,3 +1,4 @@
+// Import necessary dependencies and styles
 import React, { useState, useEffect, useCallback } from 'react';
 import { debounce } from 'lodash';
 import './Landing.css';
@@ -11,7 +12,7 @@ import {
   fetchFilms,
   fetchSpecies,
   fetchPlanets
-} from '../../services/swapi';
+} from '../../services/swapi'; // Assuming these import paths are correct
 import Character from '../../components/Character/Character';
 import CharacterModal from '../../components/CharacterModal/CharacterModal';
 import Header from '../../components/Header/Header';
@@ -19,7 +20,9 @@ import Loader from '../../components/Loader/Loader';
 import { UnifiedCharacterType } from '../../types'; // Assuming this import path is correct
 import SkeletonCard from '../../components/Loader/SkeletonCard';
 
+// Define the Landing component
 const Landing: React.FC = () => {
+  // Define state variables using hooks
   const [initialDataLoaded, setInitialDataLoaded] = useState(false);
   const [characters, setCharacters] = useState<UnifiedCharacterType[]>([]);
   const [selectedCharacter, setSelectedCharacter] =
@@ -39,13 +42,15 @@ const Landing: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const currentPage = 1;
 
+  // Fetch initial data and set loading state accordingly
   useEffect(() => {
-    // This function fetches initial data required for the component
+    // Define an async function to fetch initial data
     const fetchInitialData = async () => {
       try {
         // Set loading to true only if the characters and other data haven't been loaded yet
         if (!initialDataLoaded) setIsLoading(true);
 
+        // Fetch films, species, and planets data in parallel
         const [filmsData, speciesData, planetsData] = await Promise.all([
           fetchFilms(),
           fetchSpecies(),
@@ -55,6 +60,7 @@ const Landing: React.FC = () => {
         // Fetch initial characters separately to control flow better
         const initialCharacters = await fetchCharacters(1); // Assuming page starts at 1
 
+        // Update states with fetched data
         setFilms(filmsData);
         setSpecies(speciesData);
         setPlanets(planetsData);
@@ -69,14 +75,17 @@ const Landing: React.FC = () => {
       }
     };
 
+    // Fetch initial data only if it hasn't been loaded yet
     if (!initialDataLoaded) {
       fetchInitialData();
     }
-    // The dependency array is crucial here; ensure it triggers only the intended effects.
+    // Dependency array ensures this effect runs only once when component mounts
   }, [initialDataLoaded]);
 
+  // Define a callback to load more characters when scrolling
   const loadMoreCharacters = useCallback(async () => {
-    if (isLoading || !nextPage || nextPage === 'null') return; // Check if there's a next page
+    // Check if loading is in progress or if there's no next page
+    if (isLoading || !nextPage || nextPage === 'null') return;
     setIsLoading(true);
     try {
       const data = await fetchCharacters(parseInt(nextPage));
@@ -91,6 +100,7 @@ const Landing: React.FC = () => {
     }
   }, [nextPage, isLoading]);
 
+  // Add event listener for infinite scrolling when filters are not applied
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -102,16 +112,20 @@ const Landing: React.FC = () => {
       }
     };
 
+    // Add scroll event listener when filters are not applied
     if (!areFiltersApplied) {
       window.addEventListener('scroll', handleScroll);
     }
 
+    // Remove event listener when component unmounts or when filters are applied
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [loadMoreCharacters, areFiltersApplied]);
 
+  // Fetch characters for the current page when initial data is loaded
   useEffect(() => {
+    // Define an async function to fetch characters for the current page
     const loadCharactersForCurrentPage = async () => {
       setIsLoading(true);
       try {
@@ -125,11 +139,13 @@ const Landing: React.FC = () => {
       }
     };
 
+    // Load characters for the current page when initial data is loaded
     if (initialDataLoaded) {
       loadCharactersForCurrentPage();
     }
   }, [currentPage, initialDataLoaded]);
 
+  // Function to load characters with optional page parameter
   const loadCharacters = async (page: number = 1) => {
     setIsLoading(true);
     try {
@@ -143,6 +159,7 @@ const Landing: React.FC = () => {
     }
   };
 
+  // Function to reset filters and load characters
   const resetFilters = async () => {
     setIsLoading(true);
     setCharacters([]);
@@ -156,15 +173,18 @@ const Landing: React.FC = () => {
     await loadCharacters();
   };
 
+  // Function to update pagination state
   const updatePagination = (next: string | null) => {
     setNextPage(next ? new URL(next).searchParams.get('page') : null);
   };
 
+  // Function to handle character search by name
   const handleSearchByName = (query: string) => {
     setSearchTerm(query); // Set the searchTerm to the query value
     debounceFetchCharacterByName(query); // Debounced API call
   };
 
+  // Debounced function to fetch characters by name
   const debounceFetchCharacterByName = debounce(async (query: string) => {
     setIsLoading(true);
     try {
@@ -177,11 +197,13 @@ const Landing: React.FC = () => {
     }
   }, 300);
 
+  // Function to handle character click and open modal
   const handleCharacterClick = async (characterProp: UnifiedCharacterType) => {
     try {
       const detailedCharacter = await fetchCharacterDetailsByUrl(
         characterProp.url
       );
+      // Fetch homeworld details if homeworld URL is present
       if (detailedCharacter.homeworld) {
         const homeworldId =
           detailedCharacter.homeworld.match(/\/planets\/(\d+)\/$/)[1];
@@ -214,9 +236,10 @@ const Landing: React.FC = () => {
     }
   };
 
+  // Function to close modal
   const closeModal = () => setIsModalOpen(false);
 
-  // Handle filter change
+  // Function to handle filter change
   const handleFilterChange = async (
     filterType: string,
     filterValue: string | null
@@ -231,7 +254,7 @@ const Landing: React.FC = () => {
     }
   };
 
-  // Apply filters and fetch filtered characters
+  // Function to apply filters and fetch filtered characters
   const applyFilters = async (filters: any) => {
     setIsLoading(true);
     setCharacters([]); // Clear characters before applying new filters
@@ -301,9 +324,10 @@ const Landing: React.FC = () => {
     }
   };
 
+  // Render the component JSX
   return (
     <div className="center-container">
-      {isLoading && !initialDataLoaded ? ( // Checks both isLoading and if initial data hasn't been loaded
+      {isLoading && !initialDataLoaded ? ( // Show loader if initial data is still loading
         <Loader />
       ) : (
         <>
@@ -318,6 +342,7 @@ const Landing: React.FC = () => {
           />
           <div className="card-container">
             {characters.map((character, index) => (
+              // Render each character component with click event handler
               <Character
                 key={index}
                 character={character}
@@ -325,6 +350,7 @@ const Landing: React.FC = () => {
               />
             ))}
             {isLoading && (
+              // Render skeleton cards while loading additional characters
               <>
                 {Array.from({ length: 9 }, (_, index) => (
                   <SkeletonCard key={index} />
@@ -333,6 +359,7 @@ const Landing: React.FC = () => {
             )}
           </div>
           {isModalOpen && selectedCharacter && (
+            // Render character modal when modal is open
             <CharacterModal
               character={selectedCharacter}
               closeModal={closeModal}
@@ -344,4 +371,5 @@ const Landing: React.FC = () => {
   );
 };
 
+// Export the Landing component as default
 export default Landing;

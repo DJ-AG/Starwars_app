@@ -26,6 +26,8 @@ const Filters: React.FC<FilterProps> = ({
       onFilterChange(filterType, value !== '' ? value : null);
     };
 
+  console.log(selectedFilters, films, species, planets);
+
   return (
     <div className="filter-container">
       {/* Film Filter */}

@@ -16,6 +16,7 @@ const speciesColorMap: { [key: string]: string } = {};
 
 const Character: React.FC<CharacterProps> = React.memo(
   ({ character, onClick }) => {
+    console.log('character Data from props to Character', character);
     const [imageSrc, setImageSrc] = useState<string>(
       'https://placehold.co/400'
     );

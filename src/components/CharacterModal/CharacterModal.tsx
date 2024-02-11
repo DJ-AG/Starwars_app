@@ -1,9 +1,7 @@
-// CharacterModal.tsx
 import React, { useState, useEffect } from 'react';
-// While testing in jest, the css import statement should be commented out
 import './CharacterModal.css';
 import { UnifiedCharacterType } from '../../types';
-import { fetchCharacterImageByName } from '../../services/swapi'; // Make sure the path is correct
+import { fetchCharacterImageByName } from '../../services/swapi';
 
 interface CharacterModalProps {
   character: UnifiedCharacterType;
@@ -14,22 +12,25 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   character,
   closeModal
 }) => {
+  console.log('character Data from props', character);
   const [imageSrc, setImageSrc] = useState<string>('https://placehold.co/400');
+  const [showHomeworldDetails, setShowHomeworldDetails] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const loadImage = async () => {
       try {
-        // Assuming fetchCharacterImageByName now returns a full character object
         const characterDetails = await fetchCharacterImageByName(
           character.name
         );
+        console.log('characterDetails', characterDetails);
         if (characterDetails && characterDetails.image) {
-          setImageSrc(characterDetails.image); // Access the image property of the returned object
+          setImageSrc(characterDetails.image);
         } else {
-          setImageSrc('https://placehold.co/600x400?text=:('); // Set fallback URL here
+          setImageSrc('https://placehold.co/600x400?text=:(');
         }
       } catch (error) {
-        setImageSrc('https://placehold.co/600x400?text=:('); // Fallback for any other error
+        setImageSrc('https://placehold.co/600x400?text=:(');
         console.error('Error fetching character image:', error);
       }
     };
@@ -39,6 +40,10 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
 
   const handleImageError = () => {
     setImageSrc('https://placehold.co/600x400?text=:(');
+  };
+
+  const toggleHomeworldDetails = () => {
+    setShowHomeworldDetails(!showHomeworldDetails);
   };
 
   const formatDate = (dateString?: string) => {
@@ -51,7 +56,11 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   };
 
   return (
-    <div className="modal-backdrop" onClick={closeModal}>
+    <div
+      className="modal-backdrop"
+      onClick={closeModal}
+      data-testid="modal-backdrop"
+    >
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-container">
           <div className="image-container">
@@ -71,37 +80,43 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
               X
             </button>
             <h1>{character.name}</h1>
-            {character.homeworldDetails && (
-              <>
-                <div className="character-info">
-                  <h4>Homeworld </h4>
-                  <ul>
-                    <li>
-                      <span>
-                        {character.homeworldDetails.name || 'unknown'}
-                      </span>
-                    </li>
-                    <li>
-                      <span>
-                        Terrain:{' '}
-                        {character.homeworldDetails.terrain || 'unknown'}
-                      </span>
-                    </li>
-                    <li>
-                      <span>
-                        Climate:{' '}
-                        {character.homeworldDetails.climate || 'unknown'}
-                      </span>
-                    </li>
-                    <li>
-                      <span>
-                        Population:{' '}
-                        {character.homeworldDetails.population || 'unknown'}
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </>
+            <div className="character-info">
+              <div className="homeworld-info">
+                <h4>Homeworld</h4>
+                <button
+                  onClick={toggleHomeworldDetails}
+                  className="homeworld-button"
+                >
+                  {showHomeworldDetails ? 'Hide Details' : 'Show Details'}
+                </button>
+              </div>
+            </div>
+            {showHomeworldDetails && character.homeworldDetails && (
+              <div className="character-info">
+                <ul>
+                  <li>
+                    <span>
+                      Name: {character.homeworldDetails.name || 'unknown'}
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      Terrain: {character.homeworldDetails.terrain || 'unknown'}
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      Climate: {character.homeworldDetails.climate || 'unknown'}
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      Population:{' '}
+                      {character.homeworldDetails.population || 'unknown'}
+                    </span>
+                  </li>
+                </ul>
+              </div>
             )}
             <div className="character-info">
               <h4>GENDER</h4>
@@ -142,30 +157,27 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
               </ul>
             </div>
             {character.speciesDetails && (
-              <>
-                <div className="character-info">
-                  <h4>SPECIES</h4>
-                  <ul>
-                    <li>
-                      <span>
-                        Name: {character.speciesDetails.name || 'unknown'}
-                      </span>
-                    </li>
-                    <li>
-                      <span>
-                        Classification:{' '}
-                        {character.speciesDetails.classification || 'unknown'}
-                      </span>
-                    </li>
-                    <li>
-                      <span>
-                        Language:{' '}
-                        {character.speciesDetails.language || 'unknown'}
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </>
+              <div className="character-info">
+                <h4>SPECIES</h4>
+                <ul>
+                  <li>
+                    <span>
+                      Name: {character.speciesDetails.name || 'unknown'}
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      Classification:{' '}
+                      {character.speciesDetails.classification || 'unknown'}
+                    </span>
+                  </li>
+                  <li>
+                    <span>
+                      Language: {character.speciesDetails.language || 'unknown'}
+                    </span>
+                  </li>
+                </ul>
+              </div>
             )}
             <div className="character-info-print">
               <p>
