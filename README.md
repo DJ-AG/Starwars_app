@@ -5,6 +5,7 @@
 ## Features
 
 - **Authentication**: Upon visiting the website, users are greeted by a login screen. Although authentication is not required by the SWAPI API, it has been implemented for visual appeal. Users can use any username and password combination to log in, and a mock JWT token is generated.
+  
 - **Search and Filter**: Users can search through the SWAPI API for their favorite Star Wars characters. Additionally, they can filter characters by movie, species, or homeworld. However, due to missing data in the SWAPI API, some filtered searches may yield unexpected results.
 
 ## Running the App
@@ -23,6 +24,9 @@ Linting: Run npm run lint to lint the code.
 
 Testing: Use npm test to run tests.
 
+Project Link
+Access the project on Netlify: SWcharacter-app
+
 Dependencies
 Here are the key dependencies used in this project:
 
@@ -31,4 +35,3 @@ React Router DOM: Routing library for React applications.
 Axios: Promise-based HTTP client for making requests.
 FontAwesome: Icon library for React applications.
 For more details, refer to the package.json file.
-```
