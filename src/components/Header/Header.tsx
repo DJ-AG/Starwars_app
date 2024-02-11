@@ -7,12 +7,13 @@ import { faCircleDown, faCircleUp } from '@fortawesome/free-solid-svg-icons';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
-  onFilterChange: (filterType: string, id: string | null) => void;
+  onFilterChange: (filterType: string, filterValue: string | null) => void;
   selectedFilters: {
     film: string | null;
     species: string | null;
     planet: string | null;
   };
+  searchTerm: string; // Ensure this is included
   films: { title: string; id: string }[];
   species: { name: string; id: string }[];
   planets: { name: string; id: string }[];
@@ -24,14 +25,13 @@ const Header: React.FC<HeaderProps> = ({
   selectedFilters,
   films,
   species,
-  planets
+  planets,
+  searchTerm
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
   const [isHeaderVisible, setIsHeaderVisible] = useState(true); // Track header visibility
   const { isAuthenticated, logout } = useAuth();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
     onSearch(event.target.value);
   };
 

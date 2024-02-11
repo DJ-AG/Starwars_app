@@ -112,7 +112,7 @@ export const fetchCharacterImageByName = async (name: string) => {
       (char: any) => char.name === name
     );
     // Return the image URL if the character is found, otherwise return null
-    return character ? character.image : 'https://placehold.co/600x400?text=:(';
+    return character;
   } catch (error) {
     console.error('Error fetching character image by name:', error);
     return 'https://placehold.co/600x400?text=:(';

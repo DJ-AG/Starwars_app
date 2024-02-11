@@ -36,6 +36,7 @@ const Landing: React.FC = () => {
   const [species, setSpecies] = useState<{ name: string; id: string }[]>([]);
   const [planets, setPlanets] = useState<{ name: string; id: string }[]>([]);
   const [areFiltersApplied, setAreFiltersApplied] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const currentPage = 1;
 
   useEffect(() => {
@@ -146,6 +147,7 @@ const Landing: React.FC = () => {
     setIsLoading(true);
     setCharacters([]);
     setAreFiltersApplied(false);
+    setSearchTerm('');
     setSelectedFilters({
       film: null,
       species: null,
@@ -158,7 +160,12 @@ const Landing: React.FC = () => {
     setNextPage(next ? new URL(next).searchParams.get('page') : null);
   };
 
-  const handleSearchByName = debounce(async (query: string) => {
+  const handleSearchByName = (query: string) => {
+    setSearchTerm(query); // Set the searchTerm to the query value
+    debounceFetchCharacterByName(query); // Debounced API call
+  };
+
+  const debounceFetchCharacterByName = debounce(async (query: string) => {
     setIsLoading(true);
     try {
       const data = await fetchCharacterByName(query);
@@ -304,6 +311,7 @@ const Landing: React.FC = () => {
             onSearch={handleSearchByName}
             onFilterChange={handleFilterChange}
             selectedFilters={selectedFilters}
+            searchTerm={searchTerm}
             films={films}
             species={species}
             planets={planets}

@@ -19,8 +19,15 @@ const CharacterModal: React.FC<CharacterModalProps> = ({
   useEffect(() => {
     const loadImage = async () => {
       try {
-        const imageUrl = await fetchCharacterImageByName(character.name);
-        setImageSrc(imageUrl || 'https://placehold.co/600x400?text=:('); // Set fallback URL here
+        // Assuming fetchCharacterImageByName now returns a full character object
+        const characterDetails = await fetchCharacterImageByName(
+          character.name
+        );
+        if (characterDetails && characterDetails.image) {
+          setImageSrc(characterDetails.image); // Access the image property of the returned object
+        } else {
+          setImageSrc('https://placehold.co/600x400?text=:('); // Set fallback URL here
+        }
       } catch (error) {
         setImageSrc('https://placehold.co/600x400?text=:('); // Fallback for any other error
         console.error('Error fetching character image:', error);
